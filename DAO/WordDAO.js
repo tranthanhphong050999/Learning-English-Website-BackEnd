@@ -10,9 +10,13 @@ exports.getAllWord = async function() {
         var sql = "select * from word";
         database.connection.query(sql, function(err, results, fields) {
             if (err) {
-                resolve("false")
+                resolve({ status: false })
             } else {
-                resolve(results)
+                var tmp = {
+                    status: true,
+                    data: results
+                }
+                resolve(tmp)
             }
 
         })
@@ -26,9 +30,13 @@ exports.getOneWordById = async function(W_Id) {
         var sql = "select * from word where W_Id=?";
         database.connection.query(sql, [W_Id], function(err, results, fields) {
             if (err) {
-                resolve("false")
+                resolve({ status: false })
             } else {
-                resolve(results)
+                var tmp = {
+                    status: true,
+                    data: results
+                }
+                resolve(tmp)
             }
 
         })

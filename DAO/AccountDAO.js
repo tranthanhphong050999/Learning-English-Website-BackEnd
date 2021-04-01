@@ -2,16 +2,23 @@ var database = require("./database");
 var mysql = require("mysql");
 const { json } = require("body-parser");
 const { request } = require("express");
-
+var crypto = require('crypto-js');
 // Lấy tất cả account
 
 exports.getAllAccount = function(callbackQuery) {
     //database.connect();
     database.connection.query("select * from account", function(err, results, fields) {
         if (!err) {
-            callbackQuery(results);
+            var tmp = {
+                status: true,
+                data: results
+            }
+            callbackQuery(tmp);
         } else {
-            console.log(err);
+            var tmp = {
+                status: false,
+            }
+            callbackQuery(tmp);
         }
     })
 }
@@ -23,9 +30,16 @@ exports.getOneAccountById = async function(AC_Id) {
         var sql = "select * from account where AC_Id=?";
         database.connection.query(sql, [AC_Id], function(err, results, fields) {
             if (err) {
-                resolve("false")
+                var tmp = {
+                    status: false,
+                }
+                resolve(tmp)
             } else {
-                resolve(results)
+                var tmp = {
+                    status: true,
+                    data: results
+                }
+                resolve(tmp)
             }
 
         })
@@ -42,7 +56,9 @@ exports.login = async function(userName, passWord) {
             if (results == "") {
                 resolve("false")
             } else {
-                if (results[0].AC_passWord == passWord) {
+                var bytes = crypto.AES.decrypt(results[0].AC_passWord, 'learningenglish');
+                var message_decode = bytes.toString(crypto.enc.Utf8);
+                if (message_decode == passWord) {
                     var tmp = {
                         status: true,
                         AC_userName: results[0].AC_userName,
@@ -64,17 +80,18 @@ exports.login = async function(userName, passWord) {
 
 // Thêm
 
-exports.addAccount = async function(AC_userName, AC_fullName, AC_Email, AC_Streak, AC_Exp, AC_State, AC_Role, AC_idExpOfOneDay, AC_passWord) {
+exports.addAccount = async function(AC_fullName, AC_Email, AC_Streak, AC_Exp, AC_State, AC_Role, AC_idExpOfOneDay, AC_passWord) {
     return new Promise(resolve => {
         var sql = "INSERT INTO account (AC_userName,AC_fullName,AC_Email,AC_Streak,AC_Exp, AC_State,AC_Role,AC_idExpOfOneDay,AC_passWord) VALUES ?";
+        var passWordAES = crypto.AES.encrypt(AC_passWord, 'learningenglish').toString();
         var values = [
-            [AC_userName, AC_fullName, AC_Email, parseInt(AC_Streak), parseInt(AC_Exp), parseInt(AC_State), parseInt(AC_Role), parseInt(AC_idExpOfOneDay), AC_passWord]
+            [AC_Email, AC_fullName, AC_Email, parseInt(AC_Streak), parseInt(AC_Exp), parseInt(AC_State), parseInt(AC_Role), parseInt(AC_idExpOfOneDay), passWordAES]
         ]
         database.connection.query(sql, [values], function(err, results, fields) {
             if (err) {
-                resolve(err)
+                resolve({ status: false })
             } else {
-                resolve("true")
+                resolve({ status: true })
             }
 
         })
@@ -90,9 +107,9 @@ exports.updateAccount = async function(AC_Id, AC_userName, AC_fullName, AC_Email
 
         database.connection.query(sql, values, function(err, results, fields) {
             if (err) {
-                resolve(err)
+                resolve({ status: false })
             } else {
-                resolve("true")
+                resolve({ status: true })
             }
 
         })
@@ -106,9 +123,9 @@ exports.deleteAccountById = async function(AC_Id) {
         var sql = "delete from account where AC_Id=?";
         database.connection.query(sql, [AC_Id], function(err, results, fields) {
             if (err) {
-                resolve("false")
+                resolve({ status: false })
             } else {
-                resolve("true")
+                resolve({ status: true })
             }
 
         })

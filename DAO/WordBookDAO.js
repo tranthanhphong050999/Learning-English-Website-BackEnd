@@ -10,9 +10,13 @@ exports.getAllWordBook = async function() {
         var sql = "select * from wordbook";
         database.connection.query(sql, function(err, results, fields) {
             if (err) {
-                resolve("false")
+                resolve({ status: false })
             } else {
-                resolve(results)
+                var tmp = {
+                    status: true,
+                    data: results
+                }
+                resolve(tmp)
             }
 
         })
@@ -26,9 +30,13 @@ exports.getAllWordBookByIdAccount = async function(WB_idAccount) {
         var sql = "select * from wordbook where WB_idAccount=?";
         database.connection.query(sql, [WB_idAccount], function(err, results, fields) {
             if (err) {
-                resolve("false")
+                resolve({ status: false })
             } else {
-                resolve(results)
+                var tmp = {
+                    status: true,
+                    data: results
+                }
+                resolve(tmp)
             }
 
         })
@@ -42,9 +50,13 @@ exports.getOneWordBookById = async function(WB_Id) {
         var sql = "select * from wordbook where WB_Id=?";
         database.connection.query(sql, [WB_Id], function(err, results, fields) {
             if (err) {
-                resolve("false")
+                resolve({ status: false })
             } else {
-                resolve(results)
+                var tmp = {
+                    status: true,
+                    data: results
+                }
+                resolve(tmp)
             }
 
         })
@@ -61,9 +73,9 @@ exports.addWordBook = async function(WB_Name, WB_idAccount) {
         ]
         database.connection.query(sql, [values], function(err, results, fields) {
             if (err) {
-                resolve(err)
+                resolve({ status: false })
             } else {
-                resolve("true")
+                resolve({ status: true })
             }
 
         })
@@ -78,9 +90,9 @@ exports.updateWordBook = async function(WB_Id, WB_Name, WB_idAccount) {
         var values = [WB_Name, WB_idAccount, WB_Id]
         database.connection.query(sql, values, function(err, results, fields) {
             if (err) {
-                resolve(err)
+                resolve({ status: false })
             } else {
-                resolve("true")
+                resolve({ status: true })
             }
 
         })
@@ -94,9 +106,9 @@ exports.deleteWordBookById = async function(WB_Id) {
         var sql = "delete from wordbook where WB_Id=?";
         database.connection.query(sql, [WB_Id], function(err, results, fields) {
             if (err) {
-                resolve("false")
+                resolve({ status: false })
             } else {
-                resolve("true")
+                resolve({ status: true })
             }
 
         })
@@ -110,9 +122,9 @@ exports.deleteWordBookByIdAccount = async function(WB_idAccount) {
         var sql = "delete from wordbook where WB_idAccount=?";
         database.connection.query(sql, [WB_idAccount], function(err, results, fields) {
             if (err) {
-                resolve("false")
+                resolve({ status: false })
             } else {
-                resolve("true")
+                resolve({ status: true })
             }
 
         })

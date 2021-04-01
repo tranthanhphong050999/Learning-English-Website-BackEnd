@@ -26,6 +26,7 @@ app.get("/account/getall", function(request, response) {
 
     accountDao.getAllAccount(function(resultQuery) {
         response.json(resultQuery);
+
     });
 });
 
@@ -91,7 +92,7 @@ app.get('/getSession', (req, res) => {
 // Thêm account
 
 app.post("/account/add", urlencodedParser, async function(request, response) {
-    var AC_userName = request.body.AC_userName;
+
     var AC_fullName = request.body.AC_fullName;
     var AC_Email = request.body.AC_Email;
     var AC_Streak = (request.body.AC_Streak != "") ? request.body.AC_Streak : 0;
@@ -101,7 +102,7 @@ app.post("/account/add", urlencodedParser, async function(request, response) {
     var AC_idExpOfOneDay = (request.body.AC_idExpOfOneDay != "") ? request.body.AC_idExpOfOneDay : 0;
     var AC_passWord = request.body.AC_passWord;
     try {
-        var temp = await accountDao.addAccount(AC_userName, AC_fullName, AC_Email, AC_Streak, AC_Exp, AC_State, AC_Role, AC_idExpOfOneDay, AC_passWord)
+        var temp = await accountDao.addAccount(AC_fullName, AC_Email, AC_Streak, AC_Exp, AC_State, AC_Role, AC_idExpOfOneDay, AC_passWord)
         response.send(temp);
     } catch (error) {
         console.log(error)
