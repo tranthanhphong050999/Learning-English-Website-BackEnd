@@ -38,18 +38,20 @@ exports.login = async function(userName, passWord) {
 
         var sql = "select * from account where AC_userName=?";
         database.connection.query(sql, [userName], function(err, results, fields) {
-            console.log("jjjjjjjjjjjj" + results);
             if (results == "") {
                 resolve("false")
             } else {
-                var sql = "select * from account where AC_passWord=?";
-                database.connection.query(sql, [passWord], function(err, results, fields) {
-                    if (results == "") {
-                        resolve("false")
-                    } else {
-                        resolve(results)
+                if (results[0].AC_passWord == passWord) {
+                    var tmp = {
+                        AC_userName: results[0].AC_userName,
+                        AC_fullName: results[0].AC_fullName,
+                        AC_Email: results[0].AC_Email
                     }
-                })
+                    resolve(tmp)
+                } else {
+                    resolve("false")
+                }
+
             }
         })
 

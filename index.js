@@ -6,6 +6,14 @@ var wordDao = require("./DAO/WordDAO");
 var wordBookDao = require("./DAO/WordBookDAO")
 var bodyParser = require('body-parser');
 var app = express();
+var session = require('express-session');
+
+app.use(session({
+    resave: true,
+    saveUninitialized: true,
+    secret: 'somesecret',
+    cookie: { maxAge: 60000 }
+}));
 app.listen(5000);
 app.use(cors())
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -40,6 +48,10 @@ app.post("/account/login", urlencodedParser, async function(request, response) {
     var password = request.body.password;
     try {
         var temp = await accountDao.login(username, password);
+
+        request.session.AC_userName = {
+            AC_userName: temp.AC_userName
+        }
         console.log(temp);
         response.send(temp);
     } catch (error) {
@@ -47,6 +59,16 @@ app.post("/account/login", urlencodedParser, async function(request, response) {
     }
 
 });
+
+app.get('/getSession', (req, res) => {
+    //check session
+    if (req.session.AC_userName) {
+        console.log(req.session.id)
+        return res.status(200).json({ status: 'success', session: req.session.AC_userName })
+    }
+    return res.status(200).json({ status: 'error', session: 'No session' })
+})
+
 
 // Thêm account
 
