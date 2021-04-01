@@ -49,11 +49,29 @@ app.post("/account/login", urlencodedParser, async function(request, response) {
     try {
         var temp = await accountDao.login(username, password);
 
-        request.session.AC_userName = {
-            AC_userName: temp.AC_userName
+
+        console.log(temp)
+        console.log(request.session.id)
+        if (temp.status) {
+
+            request.session.AC_userName = {
+                AC_userName: temp.AC_userName
+            }
+            var tmp = await accountDao.addSession(temp.AC_userName, temp.AC_passWord, request.session.id)
+            response.send({
+                status: true,
+                data: tmp
+            });
+        } else {
+            response.send({
+                status: false,
+                data: tmp
+            });
         }
-        console.log(temp);
-        response.send(temp);
+
+
+
+
     } catch (error) {
         console.log(error)
     }

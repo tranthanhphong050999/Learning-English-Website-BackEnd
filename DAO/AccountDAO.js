@@ -1,6 +1,7 @@
 var database = require("./database");
 var mysql = require("mysql");
 const { json } = require("body-parser");
+const { request } = require("express");
 
 // Lấy tất cả account
 
@@ -43,9 +44,11 @@ exports.login = async function(userName, passWord) {
             } else {
                 if (results[0].AC_passWord == passWord) {
                     var tmp = {
+                        status: true,
                         AC_userName: results[0].AC_userName,
                         AC_fullName: results[0].AC_fullName,
-                        AC_Email: results[0].AC_Email
+                        AC_Email: results[0].AC_Email,
+                        AC_passWord: results[0].AC_passWord
                     }
                     resolve(tmp)
                 } else {
@@ -106,6 +109,30 @@ exports.deleteAccountById = async function(AC_Id) {
                 resolve("false")
             } else {
                 resolve("true")
+            }
+
+        })
+    })
+}
+
+// lưu session
+
+exports.addSession = async function(S_userName, S_passWord, S_Value) {
+    return new Promise(resolve => {
+        var sql = "INSERT INTO session (S_userName,S_passWord,S_Value) VALUES ?";
+        var values = [
+            [S_userName, S_passWord, S_Value]
+        ]
+        database.connection.query(sql, [values], function(err, results, fields) {
+            if (err) {
+                resolve(err)
+            } else {
+                var tmp = {
+                    S_userName: S_userName,
+                    S_passWord: S_passWord,
+                    S_Value: S_Value
+                }
+                resolve(tmp)
             }
 
         })
