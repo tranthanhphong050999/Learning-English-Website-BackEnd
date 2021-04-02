@@ -88,14 +88,19 @@ exports.updateWordBook = async function(WB_Id, WB_Name, WB_idAccount) {
     return new Promise(resolve => {
         var sql = "UPDATE wordbook SET WB_Name=?,WB_idAccount=? WHERE WB_Id=?";
         var values = [WB_Name, WB_idAccount, WB_Id]
-        database.connection.query(sql, values, function(err, results, fields) {
-            if (err) {
-                resolve({ status: false })
-            } else {
-                resolve({ status: true })
-            }
+        if (WB_Id) {
+            database.connection.query(sql, values, function(err, results, fields) {
+                if (err) {
+                    resolve({ status: false })
+                } else {
+                    resolve({ status: true })
+                }
 
-        })
+            })
+        } else {
+            resolve({ status: false })
+        }
+
     })
 }
 

@@ -95,11 +95,11 @@ app.post("/account/add", urlencodedParser, async function(request, response) {
 
     var AC_fullName = request.body.AC_fullName;
     var AC_Email = request.body.AC_Email;
-    var AC_Streak = (request.body.AC_Streak != "") ? request.body.AC_Streak : 0;
-    var AC_Exp = (request.body.AC_Exp != "") ? request.body.AC_Exp : 0;
-    var AC_State = (request.body.AC_State != "") ? request.body.AC_State : 0;
-    var AC_Role = (request.body.AC_Role != "") ? request.body.AC_Role : 0;
-    var AC_idExpOfOneDay = (request.body.AC_idExpOfOneDay != "") ? request.body.AC_idExpOfOneDay : 0;
+    var AC_Streak = (request.body.AC_Streak) ? request.body.AC_Streak : 0;
+    var AC_Exp = (request.body.AC_Exp) ? request.body.AC_Exp : 0;
+    var AC_State = (request.body.AC_State) ? request.body.AC_State : 0;
+    var AC_Role = (request.body.AC_Role) ? request.body.AC_Role : 0;
+    var AC_idExpOfOneDay = (request.body.AC_idExpOfOneDay) ? request.body.AC_idExpOfOneDay : 0;
     var AC_passWord = request.body.AC_passWord;
     try {
         var temp = await accountDao.addAccount(AC_fullName, AC_Email, AC_Streak, AC_Exp, AC_State, AC_Role, AC_idExpOfOneDay, AC_passWord)
@@ -129,11 +129,11 @@ app.post("/account/update", urlencodedParser, async function(request, response) 
     var AC_userName = request.body.AC_userName;
     var AC_fullName = request.body.AC_fullName;
     var AC_Email = request.body.AC_Email;
-    var AC_Streak = (request.body.AC_Streak != "") ? request.body.AC_Streak : 0;
-    var AC_Exp = (request.body.AC_Exp != "") ? request.body.AC_Exp : 0;
-    var AC_State = (request.body.AC_State != "") ? request.body.AC_State : 0;
-    var AC_Role = (request.body.AC_Role != "") ? request.body.AC_Role : 0;
-    var AC_idExpOfOneDay = (request.body.AC_idExpOfOneDay != "") ? request.body.AC_idExpOfOneDay : 0;
+    var AC_Streak = (request.body.AC_Streak) ? request.body.AC_Streak : 0;
+    var AC_Exp = (request.body.AC_Exp) ? request.body.AC_Exp : 0;
+    var AC_State = (request.body.AC_State) ? request.body.AC_State : 0;
+    var AC_Role = (request.body.AC_Role) ? request.body.AC_Role : 0;
+    var AC_idExpOfOneDay = (request.body.AC_idExpOfOneDay) ? request.body.AC_idExpOfOneDay : 0;
     var AC_passWord = request.body.AC_passWord;
     try {
         var temp = await accountDao.updateAccount(AC_Id, AC_userName, AC_fullName, AC_Email, AC_Streak, AC_Exp, AC_State, AC_Role, AC_idExpOfOneDay, AC_passWord)

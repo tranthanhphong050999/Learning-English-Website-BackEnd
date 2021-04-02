@@ -84,15 +84,19 @@ exports.updateWord = async function(W_Id, W_originalWord, W_translatedWord, W_Ph
     return new Promise(resolve => {
         var sql = "UPDATE word SET W_originalWord=?,W_translatedWord=?,W_Phrase=?,W_phraseMean=?,W_Avatar=?,W_learnTimes=?,W_dateCreated=?,W_Degree=?,W_linkPost=?,W_idVocabularyState=?,W_idWordBook=?,W_idLearningNumberDay=?,W_idCustomDegree=?,W_idState=?,W_wrongTimes=? Where W_Id=?";
         var values = [W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idVocabularyState, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_Id]
+        if (W_Id) {
+            database.connection.query(sql, values, function(err, results, fields) {
+                if (err) {
+                    resolve({ status: false })
+                } else {
+                    resolve({ status: true })
+                }
 
-        database.connection.query(sql, values, function(err, results, fields) {
-            if (err) {
-                resolve(err)
-            } else {
-                resolve("true")
-            }
+            })
+        } else {
+            resolve({ status: false })
+        }
 
-        })
     })
 }
 

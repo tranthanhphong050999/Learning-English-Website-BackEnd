@@ -103,16 +103,20 @@ exports.addAccount = async function(AC_fullName, AC_Email, AC_Streak, AC_Exp, AC
 exports.updateAccount = async function(AC_Id, AC_userName, AC_fullName, AC_Email, AC_Streak, AC_Exp, AC_State, AC_Role, AC_idExpOfOneDay, AC_passWord) {
     return new Promise(resolve => {
         var sql = "UPDATE account SET AC_userName=?,AC_fullName=?,AC_Email=?,AC_Streak=?,AC_State=?,AC_Role=?,AC_idExpOfOneDay=?,AC_idExpOfOneDay=?,AC_passWord=?  Where AC_Id=?"
-        var values = [AC_userName, AC_fullName, AC_Email, parseInt(AC_Streak), parseInt(AC_Exp), parseInt(AC_State), parseInt(AC_Role), parseInt(AC_idExpOfOneDay), AC_passWord, AC_Id]
+        var values = [AC_Email, AC_fullName, AC_Email, parseInt(AC_Streak), parseInt(AC_Exp), parseInt(AC_State), parseInt(AC_Role), parseInt(AC_idExpOfOneDay), AC_passWord, AC_Id]
+        if (AC_Id) {
+            database.connection.query(sql, values, function(err, results, fields) {
+                if (err) {
+                    resolve({ status: false })
+                } else {
+                    resolve({ status: true })
+                }
 
-        database.connection.query(sql, values, function(err, results, fields) {
-            if (err) {
-                resolve({ status: false })
-            } else {
-                resolve({ status: true })
-            }
+            })
+        } else {
+            resolve({ status: false })
+        }
 
-        })
     })
 }
 
