@@ -3,7 +3,8 @@ var mysql = require("mysql");
 const { json } = require("body-parser");
 const { request } = require("express");
 var crypto = require('crypto-js');
-// Lấy tất cả account
+const md5 = require('md5')
+    // Lấy tất cả account
 
 exports.getAllAccount = function(callbackQuery) {
     //database.connect();
@@ -56,9 +57,8 @@ exports.login = async function(userName, passWord) {
             if (results == "") {
                 resolve("false")
             } else {
-                var bytes = crypto.AES.decrypt(results[0].AC_passWord, 'learningenglish');
-                var message_decode = bytes.toString(crypto.enc.Utf8);
-                if (message_decode == passWord) {
+
+                if (results[0].AC_passWord == passWord) {
                     var tmp = {
                         status: true,
                         AC_userName: results[0].AC_userName,
@@ -83,9 +83,10 @@ exports.login = async function(userName, passWord) {
 exports.addAccount = async function(AC_fullName, AC_Email, AC_Streak, AC_Exp, AC_State, AC_Role, AC_idExpOfOneDay, AC_passWord) {
     return new Promise(resolve => {
         var sql = "INSERT INTO account (AC_userName,AC_fullName,AC_Email,AC_Streak,AC_Exp, AC_State,AC_Role,AC_idExpOfOneDay,AC_passWord) VALUES ?";
-        var passWordAES = crypto.AES.encrypt(AC_passWord, 'learningenglish').toString();
+        var passWordMd5 = md5(AC_passWord + "05101999")
+        console.log("pass" + passWordMd5)
         var values = [
-            [AC_Email, AC_fullName, AC_Email, parseInt(AC_Streak), parseInt(AC_Exp), parseInt(AC_State), parseInt(AC_Role), parseInt(AC_idExpOfOneDay), passWordAES]
+            [AC_Email, AC_fullName, AC_Email, parseInt(AC_Streak), parseInt(AC_Exp), parseInt(AC_State), parseInt(AC_Role), parseInt(AC_idExpOfOneDay), passWordMd5]
         ]
         database.connection.query(sql, [values], function(err, results, fields) {
             if (err) {
@@ -103,7 +104,8 @@ exports.addAccount = async function(AC_fullName, AC_Email, AC_Streak, AC_Exp, AC
 exports.updateAccount = async function(AC_Id, AC_userName, AC_fullName, AC_Email, AC_Streak, AC_Exp, AC_State, AC_Role, AC_idExpOfOneDay, AC_passWord) {
     return new Promise(resolve => {
         var sql = "UPDATE account SET AC_userName=?,AC_fullName=?,AC_Email=?,AC_Streak=?,AC_State=?,AC_Role=?,AC_idExpOfOneDay=?,AC_idExpOfOneDay=?,AC_passWord=?  Where AC_Id=?"
-        var values = [AC_Email, AC_fullName, AC_Email, parseInt(AC_Streak), parseInt(AC_Exp), parseInt(AC_State), parseInt(AC_Role), parseInt(AC_idExpOfOneDay), AC_passWord, AC_Id]
+        var passWordMd5 = md5(AC_passWord + "05101999")
+        var values = [AC_Email, AC_fullName, AC_Email, parseInt(AC_Streak), parseInt(AC_Exp), parseInt(AC_State), parseInt(AC_Role), parseInt(AC_idExpOfOneDay), passWordMd5, AC_Id]
         if (AC_Id) {
             database.connection.query(sql, values, function(err, results, fields) {
                 if (err) {

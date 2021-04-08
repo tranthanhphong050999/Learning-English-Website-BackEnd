@@ -7,7 +7,7 @@ var wordBookDao = require("./DAO/WordBookDAO")
 var bodyParser = require('body-parser');
 var app = express();
 var session = require('express-session');
-
+const md5 = require('md5')
 app.use(session({
     resave: true,
     saveUninitialized: true,
@@ -48,7 +48,8 @@ app.post("/account/login", urlencodedParser, async function(request, response) {
     var username = request.body.username;
     var password = request.body.password;
     try {
-        var temp = await accountDao.login(username, password);
+        var passWordMd5 = md5(password + "05101999")
+        var temp = await accountDao.login(username, passWordMd5);
 
 
         console.log(temp)
@@ -181,7 +182,18 @@ app.get("/word/getallbyidwordbook/:id", async function(request, response) {
     }
 })
 
-// Thêm word
+// Lấy 4 word theo idwordbook
+
+app.get("/word/getfourbyidwordbook/:id", async function(request, response) {
+        var W_idWordBook = request.params.id;
+        try {
+            var temp = await wordDao.getFourWordByIdWordBook(W_idWordBook)
+            response.json(temp)
+        } catch (error) {
+
+        }
+    })
+    // Thêm word
 
 app.post("/word/add", urlencodedParser, async function(request, response) {
     var W_originalWord = request.body.W_originalWord
@@ -344,6 +356,18 @@ app.get("/wordbook/deletebyidaccount/:id", async function(request, response) {
     var WB_idAccount = request.params.id
     try {
         var temp = await wordBookDao.deleteWordBookByIdAccount(WB_idAccount)
+        response.json(temp)
+    } catch (error) {
+
+    }
+})
+
+// Lấy wordbook theo tên
+
+app.get("/wordbook/getWordBookByName/:name", async function(request, response) {
+    var WB_Name = request.params.name
+    try {
+        var temp = await wordBookDao.getWordBookByName(WB_Name)
         response.json(temp)
     } catch (error) {
 

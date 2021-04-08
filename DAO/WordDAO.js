@@ -59,7 +59,22 @@ exports.getAllWordByIdWordBook = async function(W_idWordBook) {
     })
 }
 
-// Thêm 
+// lấy 4 word theo idwordbook
+
+exports.getFourWordByIdWordBook = async function(W_idWordBook) {
+        return new Promise(resolve => {
+            var sql = "select * from word where W_idWordBook=? LIMIT 0,4";
+            database.connection.query(sql, [W_idWordBook], function(err, results, fields) {
+                if (err) {
+                    resolve("false")
+                } else {
+                    resolve(results)
+                }
+
+            })
+        })
+    }
+    // Thêm 
 
 exports.addWord = async function(W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idVocabularyState, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes) {
     return new Promise(resolve => {

@@ -135,3 +135,22 @@ exports.deleteWordBookByIdAccount = async function(WB_idAccount) {
         })
     })
 }
+
+// lấy sổ từ theo tên
+
+exports.getWordBookByName = async function(WB_Name) {
+    return new Promise(resolve => {
+        var sql = "select * from wordbook where WB_Name like?";
+        database.connection.query(sql, ['%' + WB_Name + '%'], function(err, results, fields) {
+            if (err) {
+                resolve({ status: false })
+            } else {
+                resolve({
+                    status: true,
+                    data: results
+                })
+            }
+
+        })
+    })
+}
