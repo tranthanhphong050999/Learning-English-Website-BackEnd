@@ -65,6 +65,7 @@ exports.login = async function(userName, passWord) {
                 if (results[0].AC_passWord == passWord) {
                     var tmp = {
                         status: true,
+                        AC_Id: results[0].AC_Id,
                         AC_userName: results[0].AC_userName,
                         AC_fullName: results[0].AC_fullName,
                         AC_Email: results[0].AC_Email,
@@ -183,6 +184,7 @@ exports.loginByToken = async function(S_Value) {
 
                             var tmp = {
                                 status: true,
+                                AC_Id: results1[0].AC_Id,
                                 AC_userName: results1[0].AC_userName,
                                 AC_fullName: results1[0].AC_fullName,
                                 AC_Avatar: results1[0].AC_Avatar

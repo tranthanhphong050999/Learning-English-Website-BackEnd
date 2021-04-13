@@ -62,6 +62,7 @@ app.post("/account/login", urlencodedParser, async function(request, response) {
             var tmp = await accountDao.addSession(temp.AC_userName, temp.AC_passWord, request.session.id)
             response.send({
                 status: true,
+                AC_Id: temp.AC_Id,
                 data: tmp
             });
         } else {
