@@ -5,7 +5,8 @@ const { request } = require("express");
 var crypto = require('crypto-js');
 const md5 = require('md5');
 const e = require("express");
-// Lấy tất cả account
+var wordBookDao = require("../DAO/WordBookDAO")
+    // Lấy tất cả account
 
 exports.getAllAccount = function(callbackQuery) {
     //database.connect();
@@ -89,7 +90,7 @@ exports.addAccount = async function(AC_fullName, AC_Email, AC_Streak, AC_Exp, AC
     return new Promise(resolve => {
         var sql = "INSERT INTO account (AC_userName,AC_fullName,AC_Email,AC_Streak,AC_Exp, AC_State,AC_Role,AC_idExpOfOneDay,AC_passWord) VALUES ?";
         var passWordMd5 = md5(AC_passWord + "05101999")
-        console.log("pass" + passWordMd5)
+
         var values = [
             [AC_Email, AC_fullName, AC_Email, parseInt(AC_Streak), parseInt(AC_Exp), parseInt(AC_State), parseInt(AC_Role), parseInt(AC_idExpOfOneDay), passWordMd5]
         ]
@@ -97,7 +98,20 @@ exports.addAccount = async function(AC_fullName, AC_Email, AC_Streak, AC_Exp, AC
             if (err) {
                 resolve({ status: false })
             } else {
-                resolve({ status: true })
+                var sql1 = "SELECT * FROM account WHERE AC_Email =?"
+                database.connection.query(sql1, [AC_Email], async function(err, results1, fields) {
+                    if (results1 == "") {
+                        resolve({ status: false })
+                    } else {
+                        var tmp = await wordBookDao.addWordBook("Hàng ngày", results1[0].AC_Id)
+
+                        resolve({ status: true })
+
+
+                    }
+                })
+
+
             }
 
         })

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 01, 2021 lúc 09:53 AM
+-- Thời gian đã tạo: Th4 13, 2021 lúc 07:17 PM
 -- Phiên bản máy phục vụ: 10.1.38-MariaDB
 -- Phiên bản PHP: 7.3.3
 
@@ -38,17 +38,17 @@ CREATE TABLE `account` (
   `AC_State` int(11) NOT NULL,
   `AC_Role` int(11) NOT NULL,
   `AC_idExpOfOneDay` int(11) NOT NULL,
-  `AC_passWord` text COLLATE utf8mb4_unicode_ci NOT NULL
+  `AC_passWord` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `AC_Avatar` text COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `account`
 --
 
-INSERT INTO `account` (`AC_Id`, `AC_userName`, `AC_fullName`, `AC_Email`, `AC_Streak`, `AC_Exp`, `AC_State`, `AC_Role`, `AC_idExpOfOneDay`, `AC_passWord`) VALUES
-(3, 'phongt1223', 'Phong lê', 'phongle11303@gmail.com', 1, 0, 2, 0, 0, '123123132132'),
-(4, 'phongt', 'Phong lê', 'phongle11303@gmail.com', 1, 0, 0, 0, 0, '123123132132'),
-(5, 'phongt', 'Phong lê', 'phongle11303@gmail.com', 1, 0, 0, 0, 0, '123123132132');
+INSERT INTO `account` (`AC_Id`, `AC_userName`, `AC_fullName`, `AC_Email`, `AC_Streak`, `AC_Exp`, `AC_State`, `AC_Role`, `AC_idExpOfOneDay`, `AC_passWord`, `AC_Avatar`) VALUES
+(8, 'tranthanhphong05@gmail.com', 'Trần thanh phong', 'tranthanhphong05@gmail.com', 0, 0, 0, 0, 0, 'ac0ddb993625d6a8c888df710ee3da85', 'facebook.com'),
+(10, 'tranthanhphong05@gmail.com', 'Trần thanh phong', 'tranthanhphong05@gmail.com', 0, 0, 0, 0, 0, '574b511f6eb1d4acd00e369496cacc23', 'facebook.com');
 
 -- --------------------------------------------------------
 
@@ -73,6 +73,16 @@ CREATE TABLE `customdegree` (
   `CD_Name` text COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `customdegree`
+--
+
+INSERT INTO `customdegree` (`CD_Id`, `CD_Name`) VALUES
+(1, 'Dễ'),
+(2, 'Trung bình'),
+(3, 'Khó'),
+(4, 'Rất khó');
+
 -- --------------------------------------------------------
 
 --
@@ -82,9 +92,17 @@ CREATE TABLE `customdegree` (
 CREATE TABLE `expofoneday` (
   `EOOD_Id` int(11) NOT NULL,
   `EOOD_Exp` int(11) NOT NULL,
-  `EOOD_dateCreated` int(11) NOT NULL,
+  `EOOD_dateCreated` date NOT NULL,
   `EOOD_idAccount` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `expofoneday`
+--
+
+INSERT INTO `expofoneday` (`EOOD_Id`, `EOOD_Exp`, `EOOD_dateCreated`, `EOOD_idAccount`) VALUES
+(1, 100, '2021-04-12', 8),
+(2, 90, '2021-04-12', 10);
 
 -- --------------------------------------------------------
 
@@ -97,6 +115,17 @@ CREATE TABLE `learningnumberday` (
   `LND_numberOfDay` int(11) NOT NULL,
   `LND_Name` text COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `learningnumberday`
+--
+
+INSERT INTO `learningnumberday` (`LND_Id`, `LND_numberOfDay`, `LND_Name`) VALUES
+(1, 2, 'Học trong vòng 2 ngày'),
+(2, 3, 'Học trong vòng 3 ngày'),
+(3, 5, 'Học trong vòng 5 ngày'),
+(4, 7, 'Học trong vòng 7 ngày'),
+(5, 9, 'Học trong vòng 9 ngày');
 
 -- --------------------------------------------------------
 
@@ -121,7 +150,19 @@ INSERT INTO `session` (`S_Id`, `S_userName`, `S_passWord`, `S_Value`) VALUES
 (3, 'phongt1223', '123123132132', 'hAiEZrGE7olyOavTv2GiigcSPVPxpNlb'),
 (4, 'phongt1223', '123123132132', 'LGXrSq5bL5LvVo745v7qKpQpGTYWrDbs'),
 (5, 'phongt1223', '123123132132', 'O0nX4jzfR9-YajoDLyk2QClO4Ze51zrW'),
-(6, 'phongt1223', '123123132132', 'O0nX4jzfR9-YajoDLyk2QClO4Ze51zrW');
+(6, 'phongt1223', '123123132132', 'O0nX4jzfR9-YajoDLyk2QClO4Ze51zrW'),
+(7, 'tranthanhphong050999@gmail.com', 'U2FsdGVkX18bA303nGHSMdOiW+V3bQSWJTHy31E+FCI=', 'i_dcb8idPHSq4bFuot4Sg_FiKagC4974'),
+(8, 'tranthanhphong050999@gmail.com', 'U2FsdGVkX18bA303nGHSMdOiW+V3bQSWJTHy31E+FCI=', 'i_dcb8idPHSq4bFuot4Sg_FiKagC4974'),
+(9, 'tranthanhphong050999@gmail.com', 'U2FsdGVkX18bA303nGHSMdOiW+V3bQSWJTHy31E+FCI=', '7r1muRF0NtN28cfmmVZ0-J078wSTID2T'),
+(10, 'tranthanhphong0509@gmail.com', 'U2FsdGVkX18TzuEw+yQg1+8VYnPV9v1cJ8Q+J8HyE7M=', '7r1muRF0NtN28cfmmVZ0-J078wSTID2T'),
+(11, 'tranthanhphong05@gmail.com', 'U2FsdGVkX1+PPNFUWDz8wnCcAFyMzBilt5FUp6Ko1RI=', 'Qq73EqtVfk3hi2pb63BVm5yNcKU0cZ31'),
+(12, 'tranthanhphong05@gmail.com', 'ac0ddb993625d6a8c888df710ee3da85', 'kUcwrLmZRKJywnipP0bUlQPOmMI9FG_L'),
+(13, 'tranthanhphong05@gmail.com', 'ac0ddb993625d6a8c888df710ee3da85', 'aY9qFSix5MHzWgZkg6vbQIvLJXLDdMK3'),
+(14, 'tranthanhphong05@gmail.com', 'ac0ddb993625d6a8c888df710ee3da85', 'QeJRTMTD7yAMjHX3l14zK3EFsvhXcZZx'),
+(15, 'tranthanhphong05@gmail.com', 'ac0ddb993625d6a8c888df710ee3da85', 'QeJRTMTD7yAMjHX3l14zK3EFsvhXcZZx'),
+(16, 'tranthanhphong05@gmail.com', 'ac0ddb993625d6a8c888df710ee3da85', '76BOVKBrsPfnqR-IGDqc0cEyYg_fBT1p'),
+(17, 'tranthanhphong05@gmail.com', 'ac0ddb993625d6a8c888df710ee3da85', 'u0rlagZzthsK_0cy7T3Ae0BlvEjJ8HBA'),
+(18, 'tranthanhphong05@gmail.com', 'ac0ddb993625d6a8c888df710ee3da85', '6Idnl7GK87wnQy7_Py7MGTVt0CENXiEX');
 
 -- --------------------------------------------------------
 
@@ -154,8 +195,9 @@ CREATE TABLE `word` (
 --
 
 INSERT INTO `word` (`W_Id`, `W_originalWord`, `W_translatedWord`, `W_Phrase`, `W_phraseMean`, `W_Avatar`, `W_learnTimes`, `W_dateCreated`, `W_Degree`, `W_linkPost`, `W_idVocabularyState`, `W_idWordBook`, `W_idLearningNumberDay`, `W_idCustomDegree`, `W_idState`, `W_wrongTimes`, `W_idCatalogStored`) VALUES
-(3, 'phong', 'phong', 'phongle', 'phongle', 'abc', 10, '0000-00-00', 1, 'a', 3, 0, 0, 0, 0, 0, 0),
-(5, 'phong', 'phong', 'phongle', 'phongle', 'abc', 10, '2021-03-10', 1, 'a', 3, 0, 0, 0, 0, 0, 0);
+(6, 'Hello', '\r\nXin chào', '\"Hello, Paul,\" she said, \"I haven’t seen you for months.\"', '\"Xin chào Paul\" Cô ấy nói: \"Tôi đã gặp anh trong nhiều tháng\"', 'hello.png', 10, '2021-04-14', 1, 'https://supersimple.com/song/hello/', 1, 3, 2, 1, 0, 0, 0),
+(7, 'Good', 'Tốt', 'Let’s go on a picnic tomorrow if the weather’s good', 'Hãy đi dã ngoại vào ngày mai nếu thời tiết tốt', 'good.png', 7, '2021-04-05', 2, 'https://dictionary.cambridge.org/vi/dictionary/english/good', 1, 2, 2, 2, 0, 0, 0),
+(8, 'Stupid', 'Ngốc nghếch', 'I just made another stupid mistake.', 'Tôi vừa phạm một sai lầm ngốc nghếch', 'stupid.png', 5, '2021-04-01', 3, 'https://dictionary.cambridge.org/vi/dictionary/english/stupid', 1, 4, 2, 1, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -174,7 +216,9 @@ CREATE TABLE `wordbook` (
 --
 
 INSERT INTO `wordbook` (`WB_Id`, `WB_Name`, `WB_idAccount`) VALUES
-(2, 'no', 0);
+(2, 'Gia Đình', 8),
+(3, 'Đời sống', 10),
+(4, 'Xã hội', 8);
 
 -- --------------------------------------------------------
 
@@ -185,8 +229,16 @@ INSERT INTO `wordbook` (`WB_Id`, `WB_Name`, `WB_idAccount`) VALUES
 CREATE TABLE `wordbookstate` (
   `WBS_Id` int(11) NOT NULL,
   `WBS_Name` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `WBS_Detail` int(11) NOT NULL
+  `WBS_Detail` text COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `wordbookstate`
+--
+
+INSERT INTO `wordbookstate` (`WBS_Id`, `WBS_Name`, `WBS_Detail`) VALUES
+(1, 'Trạng thái 1', 'Trạng thái 1'),
+(2, 'Trạng thái 2', 'Trạng thái 2');
 
 -- --------------------------------------------------------
 
@@ -198,6 +250,14 @@ CREATE TABLE `wordstate` (
   `WS_Id` int(11) NOT NULL,
   `WS_Name` text COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `wordstate`
+--
+
+INSERT INTO `wordstate` (`WS_Id`, `WS_Name`) VALUES
+(1, 'Ưu tiên học trước'),
+(2, 'Không học nữa');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -271,7 +331,7 @@ ALTER TABLE `wordstate`
 -- AUTO_INCREMENT cho bảng `account`
 --
 ALTER TABLE `account`
-  MODIFY `AC_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `AC_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT cho bảng `catalogstored`
@@ -283,49 +343,49 @@ ALTER TABLE `catalogstored`
 -- AUTO_INCREMENT cho bảng `customdegree`
 --
 ALTER TABLE `customdegree`
-  MODIFY `CD_Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `CD_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT cho bảng `expofoneday`
 --
 ALTER TABLE `expofoneday`
-  MODIFY `EOOD_Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `EOOD_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT cho bảng `learningnumberday`
 --
 ALTER TABLE `learningnumberday`
-  MODIFY `LND_Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `LND_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `session`
 --
 ALTER TABLE `session`
-  MODIFY `S_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `S_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT cho bảng `word`
 --
 ALTER TABLE `word`
-  MODIFY `W_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `W_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT cho bảng `wordbook`
 --
 ALTER TABLE `wordbook`
-  MODIFY `WB_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `WB_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT cho bảng `wordbookstate`
 --
 ALTER TABLE `wordbookstate`
-  MODIFY `WBS_Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `WBS_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT cho bảng `wordstate`
 --
 ALTER TABLE `wordstate`
-  MODIFY `WS_Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `WS_Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
