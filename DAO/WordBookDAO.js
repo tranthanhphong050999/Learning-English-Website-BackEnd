@@ -12,11 +12,14 @@ exports.getAllWordBook = async function() {
             if (err) {
                 resolve({ status: false })
             } else {
-                var tmp = {
-                    status: true,
-                    data: results
+                if (results == "") { resolve({ status: false }) } else {
+                    var tmp = {
+                        status: true,
+                        data: results
+                    }
+                    resolve(tmp)
                 }
-                resolve(tmp)
+
             }
 
         })
@@ -32,11 +35,13 @@ exports.getAllWordBookByIdAccount = async function(WB_idAccount) {
             if (err) {
                 resolve({ status: false })
             } else {
-                var tmp = {
-                    status: true,
-                    data: results
+                if (results == "") { resolve({ status: false }) } else {
+                    var tmp = {
+                        status: true,
+                        data: results
+                    }
+                    resolve(tmp)
                 }
-                resolve(tmp)
             }
 
         })
@@ -52,11 +57,15 @@ exports.getOneWordBookById = async function(WB_Id) {
             if (err) {
                 resolve({ status: false })
             } else {
-                var tmp = {
-                    status: true,
-                    data: results
+                if (results == "") {
+                    resolve({ status: false })
+                } else {
+                    var tmp = {
+                        status: true,
+                        data: results
+                    }
+                    resolve(tmp)
                 }
-                resolve(tmp)
             }
 
         })
@@ -145,10 +154,15 @@ exports.getWordBookByName = async function(WB_Name) {
             if (err) {
                 resolve({ status: false })
             } else {
-                resolve({
-                    status: true,
-                    data: results
-                })
+                if (results == "") {
+                    resolve({ status: false })
+                } else {
+                    resolve({
+                        status: true,
+                        data: results
+                    })
+                }
+
             }
 
         })

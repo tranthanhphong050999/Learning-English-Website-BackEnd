@@ -80,6 +80,22 @@ app.post("/account/login", urlencodedParser, async function(request, response) {
 
 });
 
+app.post("/account/loginbytoken", urlencodedParser, async function(request, response) {
+    var S_Value = request.body.S_Value;
+
+    try {
+        var tmp = await accountDao.loginByToken(S_Value)
+        response.send(tmp)
+
+
+
+
+    } catch (error) {
+        console.log(error)
+    }
+
+});
+
 app.get('/getSession', (req, res) => {
     //check session
     if (req.session.AC_userName) {

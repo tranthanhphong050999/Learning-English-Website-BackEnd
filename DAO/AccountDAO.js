@@ -3,8 +3,9 @@ var mysql = require("mysql");
 const { json } = require("body-parser");
 const { request } = require("express");
 var crypto = require('crypto-js');
-const md5 = require('md5')
-    // Lấy tất cả account
+const md5 = require('md5');
+const e = require("express");
+// Lấy tất cả account
 
 exports.getAllAccount = function(callbackQuery) {
     //database.connect();
@@ -36,11 +37,14 @@ exports.getOneAccountById = async function(AC_Id) {
                 }
                 resolve(tmp)
             } else {
-                var tmp = {
-                    status: true,
-                    data: results
+                if (results == "") { resolve({ status: false }) } else {
+                    var tmp = {
+                        status: true,
+                        data: results
+                    }
+                    resolve(tmp)
                 }
-                resolve(tmp)
+
             }
 
         })
@@ -156,6 +160,38 @@ exports.addSession = async function(S_userName, S_passWord, S_Value) {
                     S_Value: S_Value
                 }
                 resolve(tmp)
+            }
+
+        })
+    })
+}
+
+exports.loginByToken = async function(S_Value) {
+    return new Promise(resolve => {
+        var sql = "SELECT * FROM session WHERE S_Value=? LIMIT 1";
+        database.connection.query(sql, [S_Value], function(err, results, fields) {
+            if (err) {
+                resolve({ status: false })
+            } else {
+                if (results == "") { resolve({ status: false }) } else {
+                    var sql1 = "SELECT * FROM account WHERE AC_userName = ?"
+
+                    database.connection.query(sql1, [results[0].S_userName], function(err, results1, fields) {
+                        if (err) {
+                            resolve({ status: false })
+                        } else {
+
+                            var tmp = {
+                                status: true,
+                                AC_userName: results1[0].AC_userName,
+                                AC_fullName: results1[0].AC_fullName,
+                                AC_Avatar: results1[0].AC_Avatar
+                            }
+                            resolve(tmp)
+                        }
+                    })
+                }
+
             }
 
         })

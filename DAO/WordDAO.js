@@ -12,11 +12,13 @@ exports.getAllWord = async function() {
             if (err) {
                 resolve({ status: false })
             } else {
-                var tmp = {
-                    status: true,
-                    data: results
+                if (results == "") { resolve({ status: false }) } else {
+                    var tmp = {
+                        status: true,
+                        data: results
+                    }
+                    resolve(tmp)
                 }
-                resolve(tmp)
             }
 
         })
@@ -32,11 +34,13 @@ exports.getOneWordById = async function(W_Id) {
             if (err) {
                 resolve({ status: false })
             } else {
-                var tmp = {
-                    status: true,
-                    data: results
+                if (results == "") { resolve({ status: false }) } else {
+                    var tmp = {
+                        status: true,
+                        data: results
+                    }
+                    resolve(tmp)
                 }
-                resolve(tmp)
             }
 
         })
@@ -50,9 +54,18 @@ exports.getAllWordByIdWordBook = async function(W_idWordBook) {
         var sql = "select * from word where W_idWordBook=?";
         database.connection.query(sql, [W_idWordBook], function(err, results, fields) {
             if (err) {
-                resolve("false")
+                resolve({ status: false })
             } else {
-                resolve(results)
+                if (results == "") {
+                    resolve({ status: false })
+                } else {
+                    var tmp = {
+                        status: true,
+                        data: results
+                    }
+                    resolve(tmp)
+                }
+
             }
 
         })
@@ -68,7 +81,15 @@ exports.getFourWordByIdWordBook = async function(W_idWordBook) {
                 if (err) {
                     resolve("false")
                 } else {
-                    resolve(results)
+                    if (results == "") {
+                        resolve({ status: false })
+                    } else {
+                        var tmp = {
+                            status: true,
+                            data: results
+                        }
+                        resolve(tmp)
+                    }
                 }
 
             })
@@ -84,9 +105,9 @@ exports.addWord = async function(W_originalWord, W_translatedWord, W_Phrase, W_p
         ]
         database.connection.query(sql, [values], function(err, results, fields) {
             if (err) {
-                resolve(err)
+                resolve({ status: false })
             } else {
-                resolve("true")
+                resolve({ status: true })
             }
 
         })
@@ -122,9 +143,9 @@ exports.deleteWordById = async function(W_Id) {
         var sql = "delete from word where W_Id=?";
         database.connection.query(sql, [W_Id], function(err, results, fields) {
             if (err) {
-                resolve("false")
+                resolve({ status: false })
             } else {
-                resolve("true")
+                resolve({ status: true })
             }
 
         })
@@ -138,9 +159,9 @@ exports.deleteWordByIdWordBook = async function(W_idWordBook) {
         var sql = "delete from word where W_idWordBook=?";
         database.connection.query(sql, [W_idWordBook], function(err, results, fields) {
             if (err) {
-                resolve("false")
+                resolve({ status: false })
             } else {
-                resolve("true")
+                resolve({ status: true })
             }
 
         })
