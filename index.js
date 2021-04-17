@@ -32,10 +32,11 @@ app.get("/account/getall", function(request, response) {
 
 // Lấy account theo id
 
-app.get("/account/getone/:id", async function(request, response) {
-    var AC_Id = request.params.id;
+app.post("/account/getone", urlencodedParser, async function(request, response) {
+    var AC_Id = request.body.AC_Id
+    var S_Value = request.body.S_Value
     try {
-        var temp = await accountDao.getOneAccountById(AC_Id)
+        var temp = await accountDao.getOneAccountById(AC_Id, S_Value)
         response.json(temp)
     } catch (error) {
 
@@ -283,6 +284,18 @@ app.get("/word/deletebyidwordbook/:id", async function(request, response) {
     var W_idWordBook = request.params.id;
     try {
         var temp = await wordDao.deleteWordByIdWordBook(W_idWordBook)
+        response.send(temp)
+    } catch (error) {
+
+    }
+})
+
+// Lấy số lượng của idAccount
+
+app.get("/word/getAnalyticWordByIdAccount/:id", async function(request, response) {
+    var AC_Id = request.params.id;
+    try {
+        var temp = await wordDao.getAnalyticWordByIdAccount(AC_Id)
         response.send(temp)
     } catch (error) {
 

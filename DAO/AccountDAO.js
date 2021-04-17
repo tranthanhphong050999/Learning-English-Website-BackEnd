@@ -28,27 +28,38 @@ exports.getAllAccount = function(callbackQuery) {
 
 // Lấy 1 account theo id
 
-exports.getOneAccountById = async function(AC_Id) {
+exports.getOneAccountById = async function(AC_Id, S_Value) {
     return new Promise(resolve => {
-        var sql = "select * from account where AC_Id=?";
-        database.connection.query(sql, [AC_Id], function(err, results, fields) {
-            if (err) {
-                var tmp = {
+        var sqlCheckToken = "Select * from session where S_Value=?"
+        database.connection.query(sqlCheckToken, [S_Value], function(err, resultsCheckToken, fields) {
+            if (resultsCheckToken == "") {
+                resolve({
                     status: false,
-                }
-                resolve(tmp)
+                    error: "chua dang nhap"
+                })
             } else {
-                if (results == "") { resolve({ status: false }) } else {
-                    var tmp = {
-                        status: true,
-                        data: results
+                var sql = "select * from account where AC_Id=?";
+                database.connection.query(sql, [AC_Id], function(err, results, fields) {
+                    if (err) {
+                        var tmp = {
+                            status: false,
+                        }
+                        resolve(tmp)
+                    } else {
+                        if (results == "") { resolve({ status: false }) } else {
+                            var tmp = {
+                                status: true,
+                                data: results
+                            }
+                            resolve(tmp)
+                        }
+
                     }
-                    resolve(tmp)
-                }
 
+                })
             }
-
         })
+
     })
 }
 
@@ -88,33 +99,41 @@ exports.login = async function(userName, passWord) {
 
 exports.addAccount = async function(AC_fullName, AC_Email, AC_Streak, AC_Exp, AC_State, AC_Role, AC_idExpOfOneDay, AC_passWord) {
     return new Promise(resolve => {
-        var sql = "INSERT INTO account (AC_userName,AC_fullName,AC_Email,AC_Streak,AC_Exp, AC_State,AC_Role,AC_idExpOfOneDay,AC_passWord) VALUES ?";
-        var passWordMd5 = md5(AC_passWord + "05101999")
+        var sqlCheckEmail = "Select * from account where AC_Email =?"
+        database.connection.query(sqlCheckEmail, [AC_Email], function(err, resultsCheckEmail, fields) {
+            if (resultsCheckEmail == "") {
+                var sql = "INSERT INTO account (AC_userName,AC_fullName,AC_Email,AC_Streak,AC_Exp, AC_State,AC_Role,AC_idExpOfOneDay,AC_passWord) VALUES ?";
+                var passWordMd5 = md5(AC_passWord + "05101999")
 
-        var values = [
-            [AC_Email, AC_fullName, AC_Email, parseInt(AC_Streak), parseInt(AC_Exp), parseInt(AC_State), parseInt(AC_Role), parseInt(AC_idExpOfOneDay), passWordMd5]
-        ]
-        database.connection.query(sql, [values], function(err, results, fields) {
-            if (err) {
-                resolve({ status: false })
-            } else {
-                var sql1 = "SELECT * FROM account WHERE AC_Email =?"
-                database.connection.query(sql1, [AC_Email], async function(err, results1, fields) {
-                    if (results1 == "") {
+                var values = [
+                    [AC_Email, AC_fullName, AC_Email, parseInt(AC_Streak), parseInt(AC_Exp), parseInt(AC_State), parseInt(AC_Role), parseInt(AC_idExpOfOneDay), passWordMd5]
+                ]
+                database.connection.query(sql, [values], function(err, results, fields) {
+                    if (err) {
                         resolve({ status: false })
                     } else {
-                        var tmp = await wordBookDao.addWordBook("Hàng ngày", results1[0].AC_Id)
+                        var sql1 = "SELECT * FROM account WHERE AC_Email =?"
+                        database.connection.query(sql1, [AC_Email], async function(err, results1, fields) {
+                            if (results1 == "") {
+                                resolve({ status: false })
+                            } else {
+                                var tmp = await wordBookDao.addWordBook("Hàng ngày", results1[0].AC_Id)
 
-                        resolve({ status: true })
+                                resolve({ status: true })
+
+
+                            }
+                        })
 
 
                     }
+
                 })
-
-
+            } else {
+                resolve({ status: false })
             }
-
         })
+
     })
 }
 

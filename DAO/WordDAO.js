@@ -167,3 +167,40 @@ exports.deleteWordByIdWordBook = async function(W_idWordBook) {
         })
     })
 }
+
+// Lấy số lượng từ của account
+
+
+exports.getAnalyticWordByIdAccount = async function(AC_Id) {
+    return new Promise(resolve => {
+        var today = new Date
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        var totalWord = 0
+        var totalWordToday = 0
+        var sql = "SELECT * FROM word" +
+            " WHERE W_idWordBook IN (SELECT WB_ID FROM wordbook" +
+            " WHERE WB_idAccount = ?)";
+        database.connection.query(sql, [AC_Id], function(err, results, fields) {
+            if (err) {
+                resolve({ status: false })
+            } else {
+                totalWord = results.length
+                for (var i = 0; i < results.length; i++) {
+                    var dateCreated = results[i].W_dateCreated.getFullYear() + '-' + (results[i].W_dateCreated.getMonth() + 1) + '-' + results[i].W_dateCreated.getDate();
+                    if (dateCreated == date) {
+                        totalWordToday++;
+                    }
+                }
+
+                resolve({
+                    status: true,
+                    data: {
+                        totalWord: totalWord,
+                        totalWordToday: totalWordToday
+                    }
+                })
+            }
+
+        })
+    })
+}
