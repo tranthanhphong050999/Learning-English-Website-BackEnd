@@ -3,8 +3,9 @@ var mysql = require("mysql");
 const { json } = require("body-parser");
 var connection = database.connection;
 var util = require("./Util.js")
-const chalk = require("chalk")
-    // Lấy tất cả word
+const chalk = require("chalk");
+const e = require("express");
+// Lấy tất cả word
 
 exports.getAllWord = async function() {
     return new Promise(resolve => {
@@ -98,7 +99,7 @@ exports.getFourWordByIdWordBook = async function(W_idWordBook) {
     }
     // Thêm 
 
-exports.addWord = async function(W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored, AC_Id) {
+exports.addWord = async function(W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored, W_ipaWord, W_typeOfWord, AC_Id) {
     return new Promise(resolve => {
         if (AC_Id) {
             var sqlCheckWord = "SELECT * FROM word" +
@@ -110,9 +111,9 @@ exports.addWord = async function(W_originalWord, W_translatedWord, W_Phrase, W_p
                     resolve({ status: false })
                 } else {
                     if (resultsCheckWord == "") {
-                        var sql = "INSERT INTO word (W_originalWord,W_translatedWord,W_Phrase,W_phraseMean,W_Avatar,W_learnTimes,W_dateCreated,W_Degree,W_linkPost,W_idWordBook,W_idLearningNumberDay,W_idCustomDegree,W_idState,W_wrongTimes,W_idCatalogStored) VALUES ?";
+                        var sql = "INSERT INTO word (W_originalWord,W_translatedWord,W_Phrase,W_phraseMean,W_Avatar,W_learnTimes,W_dateCreated,W_Degree,W_linkPost,W_idWordBook,W_idLearningNumberDay,W_idCustomDegree,W_idState,W_wrongTimes,W_idCatalogStored,W_ipaWord,W_typeOfWord) VALUES ?";
                         var values = [
-                            [W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored]
+                            [W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored, W_ipaWord, W_typeOfWord]
                         ]
                         database.connection.query(sql, [values], function(err, results, fields) {
                             if (err) {
@@ -141,12 +142,73 @@ exports.addWord = async function(W_originalWord, W_translatedWord, W_Phrase, W_p
     })
 }
 
+exports.getWordByName = async function(W_originalWord, id) {
+    return new Promise(resolve => {
+        var sql = "";
+        switch (id) {
+            case "0":
+                sql = "select * from word where W_originalWord like?";
+                break;
+            case "1":
+                sql = "select * from word where W_originalWord like? ORDER BY W_originalWord ASC";
+                break;
+            case "2":
+                sql = "select * from word where W_originalWord like? ORDER BY W_originalWord DESC";
+                break;
+            case "3":
+                sql = "select * from word where W_originalWord like? and W_idState = 1";
+                break;
+        }
+        console.log(sql)
+        database.connection.query(sql, ['%' + W_originalWord + '%'], function(err, results, fields) {
+            if (err) {
+                resolve({ status: false })
+            } else {
+                if (results == "") {
+                    resolve({ status: false })
+                } else {
+                    resolve({
+                        status: true,
+                        data: results
+                    })
+                }
+
+            }
+        })
+
+
+
+    })
+}
+
+// update state
+
+exports.updateWordIdState = async function(W_Id, W_idState) {
+    return new Promise(resolve => {
+        var sql = "UPDATE word SET W_idState=? Where W_Id=?";
+        var values = [W_idState, W_Id]
+        if (W_Id) {
+            database.connection.query(sql, values, function(err, results, fields) {
+                if (err) {
+                    resolve({ status: false })
+                } else {
+                    resolve({ status: true })
+                }
+
+            })
+        } else {
+            resolve({ status: false })
+        }
+
+    })
+}
+
 // Sửa
 
-exports.updateWord = async function(W_Id, W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored) {
+exports.updateWord = async function(W_Id, W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored, W_ipaWord, W_typeOfWord) {
     return new Promise(resolve => {
-        var sql = "UPDATE word SET W_originalWord=?,W_translatedWord=?,W_Phrase=?,W_phraseMean=?,W_Avatar=?,W_learnTimes=?,W_dateCreated=?,W_Degree=?,W_linkPost=?,W_idWordBook=?,W_idLearningNumberDay=?,W_idCustomDegree=?,W_idState=?,W_wrongTimes=?,W_idCatalogStored=? Where W_Id=?";
-        var values = [W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idVocabularyState, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored, W_Id]
+        var sql = "UPDATE word SET W_originalWord=?,W_translatedWord=?,W_Phrase=?,W_phraseMean=?,W_Avatar=?,W_learnTimes=?,W_dateCreated=?,W_Degree=?,W_linkPost=?,W_idWordBook=?,W_idLearningNumberDay=?,W_idCustomDegree=?,W_idState=?,W_wrongTimes=?,W_idCatalogStored=?,W_ipaWord=?,W_typeOfWord=? Where W_Id=?";
+        var values = [W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored, W_ipaWord, W_typeOfWord, W_Id]
         if (W_Id) {
             database.connection.query(sql, values, function(err, results, fields) {
                 if (err) {
@@ -277,7 +339,8 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
                                         var dateCreated = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
                                         console.log("4 :" + dateCreated)
                                         console.log("datenow" + util.getDateNow(resultsCatalogStored[i].CS_numDay))
-                                        if (resultsHop1[j].W_idCatalogStored == resultsCatalogStored[i].CS_Id && util.getDateNow(resultsCatalogStored[i].CS_numDay) == dateCreated) {
+                                        console.log(chalk.red("idstate" + resultsHop1[i].W_idState))
+                                        if (resultsHop1[j].W_idCatalogStored == resultsCatalogStored[i].CS_Id && util.getDateNow(resultsCatalogStored[i].CS_numDay) == dateCreated && resultsHop1[j].W_idState != 4 && resultsHop1[j].W_idState != 6) {
                                             console.log(resultsHop1[j])
                                             hop[i].push(resultsHop1[j])
                                         }
