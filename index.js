@@ -223,14 +223,15 @@ app.post("/word/add", urlencodedParser, async function(request, response) {
     var W_dateCreated = request.body.W_dateCreated
     var W_Degree = request.body.W_Degree
     var W_linkPost = request.body.W_linkPost
-    var W_idVocabularyState = request.body.W_idVocabularyState
+    var W_idCatalogStored = request.body.W_idCatalogStored
     var W_idWordBook = request.body.W_idWordBook
     var W_idLearningNumberDay = request.body.W_idLearningNumberDay
     var W_idCustomDegree = request.body.W_idCustomDegree
     var W_idState = request.body.W_idState
     var W_wrongTimes = request.body.W_wrongTimes
+    var AC_Id = request.body.AC_Id
     try {
-        var temp = await wordDao.addWord(W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idVocabularyState, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes)
+        var temp = await wordDao.addWord(W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored, AC_Id)
         response.send(temp);
     } catch (error) {
         console.log(error)
@@ -251,14 +252,14 @@ app.post("/word/update", urlencodedParser, async function(request, response) {
     var W_dateCreated = request.body.W_dateCreated
     var W_Degree = request.body.W_Degree
     var W_linkPost = request.body.W_linkPost
-    var W_idVocabularyState = request.body.W_idVocabularyState
+    var W_idCatalogStored = request.body.W_idCatalogStored
     var W_idWordBook = request.body.W_idWordBook
     var W_idLearningNumberDay = request.body.W_idLearningNumberDay
     var W_idCustomDegree = request.body.W_idCustomDegree
     var W_idState = request.body.W_idState
     var W_wrongTimes = request.body.W_wrongTimes
     try {
-        var temp = await wordDao.updateWord(W_Id, W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idVocabularyState, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes)
+        var temp = await wordDao.updateWord(W_Id, W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored)
         response.send(temp);
     } catch (error) {
         console.log(error)
@@ -296,6 +297,18 @@ app.get("/word/getAnalyticWordByIdAccount/:id", async function(request, response
     var AC_Id = request.params.id;
     try {
         var temp = await wordDao.getAnalyticWordByIdAccount(AC_Id)
+        response.send(temp)
+    } catch (error) {
+
+    }
+})
+
+// lấy 10 word để làm câu hỏi
+
+app.get("/word/getTenWordByIdCatalogStored/:id", async function(request, response) {
+    var AC_Id = request.params.id;
+    try {
+        var temp = await wordDao.getTenWordByIdCatalogStored(AC_Id)
         response.send(temp)
     } catch (error) {
 
