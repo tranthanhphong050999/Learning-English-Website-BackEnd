@@ -230,8 +230,10 @@ app.post("/word/add", urlencodedParser, async function(request, response) {
     var W_idState = request.body.W_idState
     var W_wrongTimes = request.body.W_wrongTimes
     var AC_Id = request.body.AC_Id
+    var W_ipaWord = request.body.W_ipaWord
+    var W_typeOfWord = request.body.W_typeOfWord
     try {
-        var temp = await wordDao.addWord(W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored, AC_Id)
+        var temp = await wordDao.addWord(W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored, W_ipaWord, W_typeOfWord, AC_Id)
         response.send(temp);
     } catch (error) {
         console.log(error)
@@ -258,14 +260,31 @@ app.post("/word/update", urlencodedParser, async function(request, response) {
     var W_idCustomDegree = request.body.W_idCustomDegree
     var W_idState = request.body.W_idState
     var W_wrongTimes = request.body.W_wrongTimes
+    var W_ipaWord = request.body.W_ipaWord
+    var W_typeOfWord = request.body.W_typeOfWord
     try {
-        var temp = await wordDao.updateWord(W_Id, W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored)
+        var temp = await wordDao.updateWord(W_Id, W_originalWord, W_translatedWord, W_Phrase, W_phraseMean, W_Avatar, W_learnTimes, W_dateCreated, W_Degree, W_linkPost, W_idWordBook, W_idLearningNumberDay, W_idCustomDegree, W_idState, W_wrongTimes, W_idCatalogStored, W_ipaWord, W_typeOfWord)
         response.send(temp);
     } catch (error) {
         console.log(error)
     }
 
 });
+
+//update state
+
+app.post("/word/updatewordstate", urlencodedParser, async function(request, response) {
+    var W_Id = request.body.W_Id
+    var W_idState = request.body.W_idState
+    try {
+        var temp = await wordDao.updateWordIdState(W_Id, W_idState)
+        response.send(temp);
+    } catch (error) {
+        console.log(error)
+    }
+
+});
+
 
 // Xóa Word
 
@@ -309,6 +328,20 @@ app.get("/word/getTenWordByIdCatalogStored/:id", async function(request, respons
     var AC_Id = request.params.id;
     try {
         var temp = await wordDao.getTenWordByIdCatalogStored(AC_Id)
+        response.send(temp)
+    } catch (error) {
+
+    }
+})
+
+// tìm kiếm word theo tên
+
+app.get("/word/search/:originalword/:id", async function(request, response) {
+    var W_originalWord = request.params.originalword;
+    var id = request.params.id;
+    console.log(id)
+    try {
+        var temp = await wordDao.getWordByName(W_originalWord, id)
         response.send(temp)
     } catch (error) {
 
