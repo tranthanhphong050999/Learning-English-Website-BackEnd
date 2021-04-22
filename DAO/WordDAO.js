@@ -159,7 +159,6 @@ exports.getWordByName = async function(W_originalWord, id) {
                 sql = "select * from word where W_originalWord like? and W_idState = 1";
                 break;
         }
-        console.log(sql)
         database.connection.query(sql, ['%' + W_originalWord + '%'], function(err, results, fields) {
             if (err) {
                 resolve({ status: false })
