@@ -21,6 +21,40 @@ exports.getDateNow = function(numberDate) {
     return dateCreatedNow
 }
 
-exports.getRanDom = function(max) {
+function checkInArray(number, array) {
+    var tmp = false;
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] == number) {
+            tmp = true
+        }
+    }
+    return tmp;
+}
 
+function getRanDom(max, array) {
+    var number = Math.floor(Math.random() * max);
+    if (checkInArray(array, number) == false) {
+        return number
+    } else {
+        return getRanDom(max, array)
+    }
+
+
+}
+exports.getDataAnswer = function(tmp, results) {
+    var data = "";
+    for (var indexTmp = 0; indexTmp < 4; indexTmp++) {
+        var number = getRanDom(results.length, tmp)
+
+        tmp.push(number)
+
+        if (indexTmp == 3) {
+            data += results[number]
+
+        } else {
+            data += results[number] + ";"
+
+        }
+    }
+    return data
 }

@@ -352,12 +352,44 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
                                                 if (resultsHop1[indexResultsHop].W_idCatalogStored == 1) {
                                                     if ((util.getDateNow(resultsCatalogStored[resultsHop1[indexResultsHop].W_idCatalogStored - 1].CS_numDay) == dateCreated || util.getDateNow(0) == dateCreated) && resultsHop1[indexResultsHop].W_idState != 4 && resultsHop1[indexResultsHop].W_idState != 6) {
 
-                                                        hop[resultsHop1[indexResultsHop].W_idCatalogStored].push(resultsHop1[indexResultsHop])
+                                                        var tmpFourAnswerArray = new Array()
+                                                        var tmpPharseAnswerArray = new Array()
+
+
+                                                        var resultsFourAnswer = resultsGame[0].G_Word.split(";")
+                                                        var resultsPharseAnswer = resultsGame[1].G_Word.split(";")
+                                                        var fourAnswer = util.getDataAnswer(tmpFourAnswerArray, resultsFourAnswer)
+                                                        var pharseAnswer = util.getDataAnswer(tmpPharseAnswerArray, resultsPharseAnswer)
+
+                                                        console.log(chalk.red(fourAnswer))
+                                                        console.log(chalk.red(pharseAnswer))
+                                                        var tmpResults = {
+                                                            fourAnswer: fourAnswer,
+                                                            pharseAnswer: pharseAnswer,
+                                                            Word: resultsHop1[indexResultsHop]
+                                                        }
+                                                        hop[resultsHop1[indexResultsHop].W_idCatalogStored - 1].push(tmpResults)
                                                     }
                                                 } else {
                                                     if (util.getDateNow(resultsCatalogStored[resultsHop1[indexResultsHop].W_idCatalogStored - 1].CS_numDay) == dateCreated && resultsHop1[indexResultsHop].W_idState != 4 && resultsHop1[indexResultsHop].W_idState != 6) {
 
-                                                        hop[resultsHop1[indexResultsHop].W_idCatalogStored].push(resultsHop1[indexResultsHop])
+                                                        var tmpFourAnswerArray = new Array()
+                                                        var tmpPharseAnswerArray = new Array()
+
+
+                                                        var resultsFourAnswer = resultsGame[0].G_Word.split(";")
+                                                        var resultsPharseAnswer = resultsGame[1].G_Word.split(";")
+                                                        var fourAnswer = util.getDataAnswer(tmpFourAnswerArray, resultsFourAnswer)
+                                                        var pharseAnswer = util.getDataAnswer(tmpPharseAnswerArray, resultsPharseAnswer)
+
+                                                        console.log(chalk.red(fourAnswer))
+                                                        console.log(chalk.red(pharseAnswer))
+                                                        var tmpResults = {
+                                                            fourAnswer: fourAnswer,
+                                                            pharseAnswer: pharseAnswer,
+                                                            Word: resultsHop1[indexResultsHop]
+                                                        }
+                                                        hop[resultsHop1[indexResultsHop].W_idCatalogStored - 1].push(tmpResults)
                                                     }
                                                 }
                                             }
@@ -369,13 +401,14 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
 
                                                 }
                                             }
-                                            console.log(tmp.length)
+
                                             switch (tmp.length) {
                                                 case 0:
                                                     console.log("không tìm thấy")
                                                     break;
                                                 case 1:
-                                                    results[i] = util.getRow(hop[0], 10)
+                                                    console.log("vô 1 rồi nè.")
+                                                    results[0] = util.getRow(hop[0], 10)
                                                     break;
                                                 case 2:
                                                     var numberRowInResults = 0;
@@ -469,7 +502,10 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
                                                     console.log(results)
                                                     break;
                                             }
-                                            resolve(results)
+                                            resolve({
+                                                status: true,
+                                                data: results
+                                            })
                                         }
                                     }
                                 })
