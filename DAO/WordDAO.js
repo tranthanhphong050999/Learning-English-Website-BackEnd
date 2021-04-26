@@ -159,7 +159,6 @@ exports.getWordByName = async function(W_originalWord, id) {
                 sql = "select * from word where W_originalWord like? and W_idState = 1";
                 break;
         }
-        console.log(sql)
         database.connection.query(sql, ['%' + W_originalWord + '%'], function(err, results, fields) {
             if (err) {
                 resolve({ status: false })
@@ -325,134 +324,156 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
                                     data: "không có dữ liệu"
                                 })
                             } else {
-                                var hop = new Array()
-                                var tmp = new Array()
-                                var results = new Array()
-                                for (var i = 0; i < resultsCatalogStored.length; i++) {
-                                    hop[i] = new Array()
-                                    for (var j = 0; j < resultsHop1.length; j++) {
-                                        console.log("1 : " + resultsHop1[j].W_idCatalogStored)
-                                        console.log("2 : " + resultsCatalogStored[i].CS_Id)
-                                        console.log("3 : " + resultsHop1[j].W_dateCreated)
-                                        let date = resultsHop1[j].W_dateCreated
-                                        console.log("date: " + date)
-                                        var dateCreated = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-                                        console.log("4 :" + dateCreated)
-                                        console.log("datenow" + util.getDateNow(resultsCatalogStored[i].CS_numDay))
-                                        console.log(chalk.red("idstate" + resultsHop1[i].W_idState))
-                                        if (resultsHop1[j].W_idCatalogStored == resultsCatalogStored[i].CS_Id && util.getDateNow(resultsCatalogStored[i].CS_numDay) == dateCreated && resultsHop1[j].W_idState != 4 && resultsHop1[j].W_idState != 6) {
-                                            console.log(resultsHop1[j])
-                                            hop[i].push(resultsHop1[j])
+                                var sqlGame = "select * from game"
+                                database.connection.query(sqlGame, function(err, resultsGame, fields) {
+                                    if (err) {
+                                        resolve({
+                                            status: false,
+                                            data: "Lỗi query"
+                                        })
+                                    } else {
+                                        if (resultsGame == "") {
+                                            resolve({
+                                                status: false,
+                                                data: " Không có dữ liệu."
+                                            })
+                                        } else {
+                                            //console.log(chalk.red("resultgame" + resultsGame[0].G_Word))
+                                            var hop = new Array()
+                                            var tmp = new Array()
+                                            var results = new Array()
+                                            for (var indexCatalog = 0; indexCatalog < resultsCatalogStored.length; indexCatalog++) {
+                                                hop[indexCatalog] = new Array()
+                                            }
+                                            for (var indexResultsHop = 0; indexResultsHop < resultsHop1.length; indexResultsHop++) {
+                                                let date = resultsHop1[indexResultsHop].W_dateCreated
+                                                console.log("date: " + date)
+                                                var dateCreated = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+                                                if (resultsHop1[indexResultsHop].W_idCatalogStored == 1) {
+                                                    if ((util.getDateNow(resultsCatalogStored[resultsHop1[indexResultsHop].W_idCatalogStored - 1].CS_numDay) == dateCreated || util.getDateNow(0) == dateCreated) && resultsHop1[indexResultsHop].W_idState != 4 && resultsHop1[indexResultsHop].W_idState != 6) {
+
+                                                        hop[resultsHop1[indexResultsHop].W_idCatalogStored].push(resultsHop1[indexResultsHop])
+                                                    }
+                                                } else {
+                                                    if (util.getDateNow(resultsCatalogStored[resultsHop1[indexResultsHop].W_idCatalogStored - 1].CS_numDay) == dateCreated && resultsHop1[indexResultsHop].W_idState != 4 && resultsHop1[indexResultsHop].W_idState != 6) {
+
+                                                        hop[resultsHop1[indexResultsHop].W_idCatalogStored].push(resultsHop1[indexResultsHop])
+                                                    }
+                                                }
+                                            }
+
+                                            for (var indexCatalog = 0; indexCatalog < resultsCatalogStored.length; indexCatalog++) {
+                                                if (hop[indexCatalog].length != 0) {
+                                                    console.log(chalk.red("hop " + indexCatalog + " : " + hop[indexCatalog].length))
+                                                    tmp.push(indexCatalog) // số lượng hộp có dữ liệu
+
+                                                }
+                                            }
+                                            console.log(tmp.length)
+                                            switch (tmp.length) {
+                                                case 0:
+                                                    console.log("không tìm thấy")
+                                                    break;
+                                                case 1:
+                                                    results[i] = util.getRow(hop[0], 10)
+                                                    break;
+                                                case 2:
+                                                    var numberRowInResults = 0;
+                                                    for (var i = tmp.length - 1; i >= 0; i--) {
+                                                        if (i == 1) {
+                                                            results[i] = util.getRow(hop[tmp[i]], 4)
+                                                            numberRowInResults += results[i].length
+                                                        }
+                                                        if (i == 0) {
+                                                            if (numberRowInResults < 10 - 4) {
+                                                                results[i] = util.getRow(hop[tmp[i]], 10 - numberRowInResults)
+                                                            } else {
+                                                                results[i] = util.getRow(hop[tmp[i]], 6)
+                                                            }
+                                                        }
+                                                    }
+                                                    break;
+                                                case 3:
+                                                    var numberRowInResults = 0;
+                                                    for (var i = tmp.length - 1; i >= 0; i--) {
+                                                        if (i == 2) {
+                                                            results[i] = util.getRow(hop[tmp[i]], 2)
+                                                            numberRowInResults += results[i].length
+                                                        }
+                                                        if (i == 1) {
+                                                            results[i] = util.getRow(hop[tmp[i]], 3)
+                                                            numberRowInResults += results[i].length
+                                                        }
+                                                        if (i == 0) {
+                                                            if (numberRowInResults < 10 - 5) {
+                                                                results[i] = util.getRow(hop[tmp[i]], 10 - numberRowInResults)
+                                                            } else {
+                                                                results[i] = util.getRow(hop[tmp[i]], 5)
+                                                            }
+                                                        }
+                                                    }
+                                                    break;
+                                                case 4:
+                                                    var numberRowInResults = 0;
+                                                    for (var i = tmp.length - 1; i >= 0; i--) {
+
+                                                        if (i == 3) {
+                                                            results[i] = util.getRow(hop[tmp[i]], 1)
+                                                            numberRowInResults += results[i].length
+                                                        }
+                                                        if (i == 2) {
+                                                            results[i] = util.getRow(hop[tmp[i]], 2)
+                                                            numberRowInResults += results[i].length
+                                                        }
+                                                        if (i == 1) {
+                                                            results[i] = util.getRow(hop[tmp[i]], 3)
+                                                            numberRowInResults += results[i].length
+                                                        }
+                                                        if (i == 0) {
+                                                            if (numberRowInResults < 10 - 4) {
+                                                                results[i] = util.getRow(hop[tmp[i]], 10 - numberRowInResults)
+                                                            } else {
+                                                                results[i] = util.getRow(hop[tmp[i]], 4)
+                                                            }
+                                                        }
+                                                    }
+                                                    break;
+                                                case 5:
+                                                    var numberRowInResults = 0;
+                                                    for (var i = tmp.length - 1; i >= 0; i--) {
+                                                        if (i == 4) {
+                                                            results[i] = util.getRow(hop[i], 1)
+                                                            numberRowInResults += results[i].length
+                                                        }
+                                                        if (i == 3) {
+                                                            results[i] = util.getRow(hop[i], 2)
+                                                            numberRowInResults += results[i].length
+                                                        }
+                                                        if (i == 2) {
+                                                            results[i] = util.getRow(hop[i], 1)
+                                                            numberRowInResults += results[i].length
+                                                        }
+                                                        if (i == 1) {
+                                                            results[i] = util.getRow(hop[i], 3)
+                                                            numberRowInResults += results[i].length
+                                                        }
+                                                        if (i == 0) {
+                                                            if (numberRowInResults < 10 - 3) {
+                                                                results[i] = util.getRow(hop[i], 10 - numberRowInResults)
+                                                            } else {
+                                                                results[i] = util.getRow(hop[i], 3)
+                                                            }
+                                                        }
+                                                    }
+                                                    //results.push(util.getRow(hop[0], 3))
+                                                    console.log(results)
+                                                    break;
+                                            }
+                                            resolve(results)
                                         }
                                     }
-                                    if (hop[i].length != 0) {
-                                        console.log(chalk.red("hop " + i + " : " + hop[i].length))
-                                        tmp.push(i) // số lượng hộp có dữ liệu
+                                })
 
-                                    }
-
-                                }
-                                console.log(tmp.length)
-                                switch (tmp.length) {
-                                    case 0:
-                                        console.log("không tìm thấy")
-                                        break;
-                                    case 1:
-                                        results[i] = util.getRow(hop[0], 10)
-                                        break;
-                                    case 2:
-                                        var numberRowInResults = 0;
-                                        for (var i = tmp.length - 1; i >= 0; i--) {
-                                            if (i == 1) {
-                                                results[i] = util.getRow(hop[tmp[i]], 4)
-                                                numberRowInResults += results[i].length
-                                            }
-                                            if (i == 0) {
-                                                if (numberRowInResults < 10 - 4) {
-                                                    results[i] = util.getRow(hop[tmp[i]], 10 - numberRowInResults)
-                                                } else {
-                                                    results[i] = util.getRow(hop[tmp[i]], 6)
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    case 3:
-                                        var numberRowInResults = 0;
-                                        for (var i = tmp.length - 1; i >= 0; i--) {
-                                            if (i == 2) {
-                                                results[i] = util.getRow(hop[tmp[i]], 2)
-                                                numberRowInResults += results[i].length
-                                            }
-                                            if (i == 1) {
-                                                results[i] = util.getRow(hop[tmp[i]], 3)
-                                                numberRowInResults += results[i].length
-                                            }
-                                            if (i == 0) {
-                                                if (numberRowInResults < 10 - 5) {
-                                                    results[i] = util.getRow(hop[tmp[i]], 10 - numberRowInResults)
-                                                } else {
-                                                    results[i] = util.getRow(hop[tmp[i]], 5)
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    case 4:
-                                        var numberRowInResults = 0;
-                                        for (var i = tmp.length - 1; i >= 0; i--) {
-
-                                            if (i == 3) {
-                                                results[i] = util.getRow(hop[tmp[i]], 1)
-                                                numberRowInResults += results[i].length
-                                            }
-                                            if (i == 2) {
-                                                results[i] = util.getRow(hop[tmp[i]], 2)
-                                                numberRowInResults += results[i].length
-                                            }
-                                            if (i == 1) {
-                                                results[i] = util.getRow(hop[tmp[i]], 3)
-                                                numberRowInResults += results[i].length
-                                            }
-                                            if (i == 0) {
-                                                if (numberRowInResults < 10 - 4) {
-                                                    results[i] = util.getRow(hop[tmp[i]], 10 - numberRowInResults)
-                                                } else {
-                                                    results[i] = util.getRow(hop[tmp[i]], 4)
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    case 5:
-                                        var numberRowInResults = 0;
-                                        for (var i = tmp.length - 1; i >= 0; i--) {
-                                            if (i == 4) {
-                                                results[i] = util.getRow(hop[i], 1)
-                                                numberRowInResults += results[i].length
-                                            }
-                                            if (i == 3) {
-                                                results[i] = util.getRow(hop[i], 2)
-                                                numberRowInResults += results[i].length
-                                            }
-                                            if (i == 2) {
-                                                results[i] = util.getRow(hop[i], 1)
-                                                numberRowInResults += results[i].length
-                                            }
-                                            if (i == 1) {
-                                                results[i] = util.getRow(hop[i], 3)
-                                                numberRowInResults += results[i].length
-                                            }
-                                            if (i == 0) {
-                                                if (numberRowInResults < 10 - 3) {
-                                                    results[i] = util.getRow(hop[i], 10 - numberRowInResults)
-                                                } else {
-                                                    results[i] = util.getRow(hop[i], 3)
-                                                }
-                                            }
-                                        }
-                                        //results.push(util.getRow(hop[0], 3))
-                                        console.log(results)
-                                        break;
-                                }
-                                resolve(results)
                             }
 
                         }

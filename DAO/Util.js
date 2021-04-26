@@ -20,3 +20,7 @@ exports.getDateNow = function(numberDate) {
     console.log("now :" + dateCreatedNow)
     return dateCreatedNow
 }
+
+exports.getRanDom = function(max) {
+
+}
