@@ -142,24 +142,31 @@ exports.addWord = async function(W_originalWord, W_translatedWord, W_Phrase, W_p
     })
 }
 
-exports.getWordByName = async function(W_originalWord, id) {
+exports.getWordByName = async function(W_originalWord, W_idWordBook, id) {
     return new Promise(resolve => {
         var sql = "";
         switch (id) {
+            case "":
+                if (W_originalWord == "") {
+                    sql = "select * from word where W_idWordBook = ? ORDER BY W_originalWord ASC"
+                } else {
+                    sql = "select * from word where W_idWordBook = ? and W_originalWord like? ORDER BY W_originalWord ASC"
+                }
+                break;
             case "0":
-                sql = "select * from word where W_originalWord like?";
+                sql = "select * from word where W_idWordBook = ? and W_originalWord like? "
                 break;
             case "1":
-                sql = "select * from word where W_originalWord like? ORDER BY W_originalWord ASC";
+                sql = "select * from word where W_idWordBook = ? and W_originalWord like? ORDER BY W_originalWord ASC";
                 break;
             case "2":
-                sql = "select * from word where W_originalWord like? ORDER BY W_originalWord DESC";
+                sql = "select * from word where W_idWordBook = ? and W_originalWord like? ORDER BY W_originalWord DESC";
                 break;
             case "3":
-                sql = "select * from word where W_originalWord like? and W_idState = 1";
+                sql = "select * from word W_idWordBook = ? and where W_originalWord like? and W_idState = 1";
                 break;
         }
-        database.connection.query(sql, ['%' + W_originalWord + '%'], function(err, results, fields) {
+        database.connection.query(sql, [W_idWordBook, '%' + W_originalWord + '%'], function(err, results, fields) {
             if (err) {
                 resolve({ status: false })
             } else {
@@ -522,6 +529,37 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
         })
 
     })
+}
+
+// cập nhật từ sau khi được trả lời câu hỏi 
+
+exports.updateTenWordQuestion = async function(wordTrue, wordFalse) {
+    return new Promise(resolve => {
+        var dateNow = util.getDateNow(0);
+        var arrWordTrue = wordTrue.split(",")
+        var arrWordFalse = wordFalse.split(",")
+        console.log("datenow= : " + dateNow)
+        sqlWordTrue = "UPDATE word AS w SET w.W_dateCreated = ?, w.W_idCatalogStored = CASE  WHEN w.W_idCatalogStored = 5 THEN '5'WHEN w.W_idCatalogStored !=5 THEN w.W_idCatalogStored+1 ELSE'' END WHERE w.W_Id IN (?)"
+        database.connection.query(sqlWordTrue, [dateNow, arrWordTrue], function(err, resultsWordTrue, fields) {
+            if (err) {
+                resolve({ status: false, err: err })
+            } else {
+                console.log(fields)
+                sqlWordFalse = "UPDATE word AS w SET w.W_idCatalogStored = 1,w.W_dateCreated = ? WHERE w.W_Id IN (?)"
+                database.connection.query(sqlWordFalse, [dateNow, arrWordFalse], function(err, resultsWordFalse, fields) {
+                    if (err) {
+                        resolve({ status: false, err: err })
+                    } else {
+                        console.log(fields)
+                        resolve({ status: true })
+                    }
+
+                })
+            }
+
+        })
+    })
+
 }
 
 // exports.getTenWordByIdCatalogStored = async function(AC_Id) {
