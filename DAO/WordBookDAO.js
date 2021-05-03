@@ -145,12 +145,12 @@ exports.deleteWordBookByIdAccount = async function(WB_idAccount) {
     })
 }
 
-// lấy sổ từ theo tên
+// lấy sổ từ theo tên _ idaccount
 
-exports.getWordBookByName = async function(WB_Name) {
+exports.getWordBookByName = async function(WB_Name, WB_idAccount) {
     return new Promise(resolve => {
-        var sql = "select * from wordbook where WB_Name like?";
-        database.connection.query(sql, ['%' + WB_Name + '%'], function(err, results, fields) {
+        var sql = "select * from wordbook where WB_idAccount = ? and WB_Name like?";
+        database.connection.query(sql, [WB_idAccount, '%' + WB_Name + '%'], function(err, results, fields) {
             if (err) {
                 resolve({ status: false })
             } else {

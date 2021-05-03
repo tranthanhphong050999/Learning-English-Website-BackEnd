@@ -336,19 +336,55 @@ app.get("/word/getTenWordByIdCatalogStored/:id", async function(request, respons
 
 // tìm kiếm word theo tên
 
-app.get("/word/search/:originalword/:id", async function(request, response) {
+app.get("/word/search/:idwordbook/:originalword/:id", async function(request, response) {
     var W_originalWord = request.params.originalword;
+    var W_idWordBook = request.params.idwordbook;
     var id = request.params.id;
     console.log(id)
     try {
-        var temp = await wordDao.getWordByName(W_originalWord, id)
+        var temp = await wordDao.getWordByName(W_originalWord, W_idWordBook, id)
         response.send(temp)
     } catch (error) {
 
     }
 })
+app.get("/word/search/:idwordbook/:originalword", async function(request, response) {
+    var W_originalWord = request.params.originalword;
+    var W_idWordBook = request.params.idwordbook;
 
-//************--- WORDBOOK---***********/
+
+    try {
+        var temp = await wordDao.getWordByName(W_originalWord, W_idWordBook, "")
+        response.send(temp)
+    } catch (error) {
+
+    }
+})
+app.get("/word/search/:idwordbook", async function(request, response) {
+
+        var W_idWordBook = request.params.idwordbook;
+
+
+        try {
+            var temp = await wordDao.getWordByName("", W_idWordBook, "")
+            response.send(temp)
+        } catch (error) {
+
+        }
+    })
+    // cập nhật 10 câu hỏi vừa làm bài
+
+app.get("/word/update/:wordtrue/:wordfalse", async function(request, response) {
+        var wordTrue = request.params.wordtrue
+        var wordFalse = request.params.wordfalse
+        try {
+            var temp = await wordDao.updateTenWordQuestion(wordTrue, wordFalse)
+            response.json(temp)
+        } catch (error) {
+
+        }
+    })
+    //************--- WORDBOOK---***********/
 
 // Lấy tất cả wordbook
 
@@ -440,10 +476,11 @@ app.get("/wordbook/deletebyidaccount/:id", async function(request, response) {
 
 // Lấy wordbook theo tên
 
-app.get("/wordbook/getWordBookByName/:name", async function(request, response) {
+app.get("/wordbook/search/:idaccount/:name", async function(request, response) {
     var WB_Name = request.params.name
+    var WB_idAccount = request.params.idaccount
     try {
-        var temp = await wordBookDao.getWordBookByName(WB_Name)
+        var temp = await wordBookDao.getWordBookByName(WB_Name, WB_idAccount)
         response.json(temp)
     } catch (error) {
 
