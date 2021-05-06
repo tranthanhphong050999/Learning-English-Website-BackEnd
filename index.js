@@ -340,7 +340,7 @@ app.get("/word/getTenWordByIdCatalogStored/:id", async function(request, respons
 
 // tìm kiếm word theo tên
 
-app.get("/word/search/:idwordbook/:originalword/:id", async function(request, response) {
+app.get("/word/search/:originalword/:idwordbook/:id", async function(request, response) {
     var W_originalWord = request.params.originalword;
     var W_idWordBook = request.params.idwordbook;
     var id = request.params.id;

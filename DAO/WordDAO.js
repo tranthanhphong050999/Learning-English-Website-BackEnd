@@ -148,14 +148,14 @@ exports.getWordByName = async function(W_originalWord, W_idWordBook, id) {
         console.log("tim kiem :" + W_originalWord)
         switch (id) {
             case "":
-                if (W_originalWord == "###") {
+                if (W_originalWord == "tokenlveenglish") {
                     sql = "select * from word where W_idWordBook = ? and W_idState != 2 ORDER BY W_originalWord ASC"
                 } else {
                     sql = "select * from word where W_idWordBook = ? and W_idState != 2 and W_originalWord like ? ORDER BY W_originalWord ASC"
                 }
                 break;
             case "0":
-                if (W_originalWord == "###") {
+                if (W_originalWord == "tokenlveenglish") {
                     sql = "select * from word where W_idWordBook = ? and W_idState != 2 ORDER BY W_originalWord ASC"
                 } else {
                     sql = "select * from word where W_idWordBook = ? and W_idState != 2 and W_originalWord like ? ORDER BY W_originalWord ASC"
@@ -163,7 +163,7 @@ exports.getWordByName = async function(W_originalWord, W_idWordBook, id) {
 
                 break;
             case "1":
-                if (W_originalWord == "###") {
+                if (W_originalWord == "tokenlveenglish") {
                     sql = "select * from word where W_idWordBook = ? and W_idState != 2 ORDER BY W_originalWord ASC"
                 } else {
                     sql = "select * from word where W_idWordBook = ? and W_idState != 2 and W_originalWord like ? ORDER BY W_originalWord ASC";
@@ -171,7 +171,7 @@ exports.getWordByName = async function(W_originalWord, W_idWordBook, id) {
 
                 break;
             case "2":
-                if (W_originalWord == "###") {
+                if (W_originalWord == "tokenlveenglish") {
                     sql = "select * from word where W_idWordBook = ? and W_idState != 2 ORDER BY W_originalWord DESC"
                 } else {
                     sql = "select * from word where W_idWordBook = ? and W_idState != 2 and W_originalWord like ? ORDER BY W_originalWord DESC";
@@ -179,7 +179,7 @@ exports.getWordByName = async function(W_originalWord, W_idWordBook, id) {
 
                 break;
             case "3":
-                if (W_originalWord == "###") {
+                if (W_originalWord == "tokenlveenglish") {
                     sql = "select * from word  where W_idWordBook = ? and W_idState != 2 and (W_idState = 1 or W_idState = 5 or W_idState = 6)";
                 } else {
                     sql = "select * from word  where W_idWordBook = ? and W_idState != 2 and W_originalWord like ? and (W_idState = 1 or W_idState = 5 or W_idState = 6)";

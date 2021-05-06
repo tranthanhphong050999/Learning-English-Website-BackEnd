@@ -250,6 +250,11 @@ exports.getStreakByIdAccount = async function(AC_Id) {
                     })
                 } else {
                     console.log("resutls :" + results.length)
+                    for (var i = results.length - 1; i >= results.length - 7; i--) {
+                        //let date = resultsHop1[indexResultsHop].W_dateCreated
+
+                        var dateCreated = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+                    }
                     resolve({
                         status: true,
                         data: results
