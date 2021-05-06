@@ -53,7 +53,7 @@ exports.getOneWordById = async function(W_Id) {
 
 exports.getAllWordByIdWordBook = async function(W_idWordBook) {
     return new Promise(resolve => {
-        var sql = "select * from word where W_idWordBook=?";
+        var sql = "select * from word where W_idWordBook=? and W_idState !=2";
         database.connection.query(sql, [W_idWordBook], function(err, results, fields) {
             if (err) {
                 resolve({ status: false })
@@ -145,25 +145,46 @@ exports.addWord = async function(W_originalWord, W_translatedWord, W_Phrase, W_p
 exports.getWordByName = async function(W_originalWord, W_idWordBook, id) {
     return new Promise(resolve => {
         var sql = "";
+        console.log("tim kiem :" + W_originalWord)
         switch (id) {
             case "":
-                if (W_originalWord == "") {
-                    sql = "select * from word where W_idWordBook = ? ORDER BY W_originalWord ASC"
+                if (W_originalWord == "###") {
+                    sql = "select * from word where W_idWordBook = ? and W_idState != 2 ORDER BY W_originalWord ASC"
                 } else {
-                    sql = "select * from word where W_idWordBook = ? and W_originalWord like? ORDER BY W_originalWord ASC"
+                    sql = "select * from word where W_idWordBook = ? and W_idState != 2 and W_originalWord like ? ORDER BY W_originalWord ASC"
                 }
                 break;
             case "0":
-                sql = "select * from word where W_idWordBook = ? and W_originalWord like? "
+                if (W_originalWord == "###") {
+                    sql = "select * from word where W_idWordBook = ? and W_idState != 2 ORDER BY W_originalWord ASC"
+                } else {
+                    sql = "select * from word where W_idWordBook = ? and W_idState != 2 and W_originalWord like ? ORDER BY W_originalWord ASC"
+                }
+
                 break;
             case "1":
-                sql = "select * from word where W_idWordBook = ? and W_originalWord like? ORDER BY W_originalWord ASC";
+                if (W_originalWord == "###") {
+                    sql = "select * from word where W_idWordBook = ? and W_idState != 2 ORDER BY W_originalWord ASC"
+                } else {
+                    sql = "select * from word where W_idWordBook = ? and W_idState != 2 and W_originalWord like ? ORDER BY W_originalWord ASC";
+                }
+
                 break;
             case "2":
-                sql = "select * from word where W_idWordBook = ? and W_originalWord like? ORDER BY W_originalWord DESC";
+                if (W_originalWord == "###") {
+                    sql = "select * from word where W_idWordBook = ? and W_idState != 2 ORDER BY W_originalWord DESC"
+                } else {
+                    sql = "select * from word where W_idWordBook = ? and W_idState != 2 and W_originalWord like ? ORDER BY W_originalWord DESC";
+                }
+
                 break;
             case "3":
-                sql = "select * from word W_idWordBook = ? and where W_originalWord like? and W_idState = 1";
+                if (W_originalWord == "###") {
+                    sql = "select * from word  where W_idWordBook = ? and W_idState != 2 and (W_idState = 1 or W_idState = 5 or W_idState = 6)";
+                } else {
+                    sql = "select * from word  where W_idWordBook = ? and W_idState != 2 and W_originalWord like ? and (W_idState = 1 or W_idState = 5 or W_idState = 6)";
+                }
+
                 break;
         }
         database.connection.query(sql, [W_idWordBook, '%' + W_originalWord + '%'], function(err, results, fields) {
@@ -357,7 +378,7 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
                                                 console.log("date: " + date)
                                                 var dateCreated = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
                                                 if (resultsHop1[indexResultsHop].W_idCatalogStored == 1) {
-                                                    if ((util.getDateNow(resultsCatalogStored[resultsHop1[indexResultsHop].W_idCatalogStored - 1].CS_numDay) == dateCreated || util.getDateNow(0) == dateCreated) && resultsHop1[indexResultsHop].W_idState != 4 && resultsHop1[indexResultsHop].W_idState != 6) {
+                                                    if ((util.getDateNow(resultsCatalogStored[resultsHop1[indexResultsHop].W_idCatalogStored - 1].CS_numDay) == dateCreated || util.getDateNow(0) == dateCreated) && resultsHop1[indexResultsHop].W_idState != 2 && resultsHop1[indexResultsHop].W_idState != 4 && resultsHop1[indexResultsHop].W_idState != 6) {
 
                                                         var tmpFourAnswerArray = new Array()
                                                         var tmpPharseAnswerArray = new Array()
@@ -415,7 +436,7 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
                                                     break;
                                                 case 1:
                                                     console.log("vô 1 rồi nè.")
-                                                    results[0] = util.getRow(hop[0], 10)
+                                                    results[0] = util.getRow(hop[tmp[0]], 10)
                                                     break;
                                                 case 2:
                                                     var numberRowInResults = 0;

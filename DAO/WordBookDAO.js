@@ -30,7 +30,7 @@ exports.getAllWordBook = async function() {
 
 exports.getAllWordBookByIdAccount = async function(WB_idAccount) {
     return new Promise(resolve => {
-        var sql = "select * from wordbook where WB_idAccount=?";
+        var sql = "select * from wordbook where WB_idAccount=? and WB_idState !=1";
         database.connection.query(sql, [WB_idAccount], function(err, results, fields) {
             if (err) {
                 resolve({ status: false })

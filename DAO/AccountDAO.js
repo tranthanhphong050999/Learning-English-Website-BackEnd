@@ -232,3 +232,30 @@ exports.loginByToken = async function(S_Value) {
         })
     })
 }
+
+exports.getStreakByIdAccount = async function(AC_Id) {
+    return new Promise(resolve => {
+        sql = "select * from expofoneday Where EOOD_idAccount= ?"
+        database.connection.query(sql, [AC_Id], function(err, results, fields) {
+            if (err) {
+                resolve({
+                    status: false,
+                    data: "Lỗi database"
+                })
+            } else {
+                if (results == "") {
+                    resolve({
+                        status: false,
+                        data: "Không tìm thấy dữ liệu"
+                    })
+                } else {
+                    console.log("resutls :" + results.length)
+                    resolve({
+                        status: true,
+                        data: results
+                    })
+                }
+            }
+        })
+    })
+}
