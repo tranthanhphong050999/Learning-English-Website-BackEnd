@@ -88,14 +88,18 @@ app.post("/account/loginbytoken", urlencodedParser, async function(request, resp
     try {
         var tmp = await accountDao.loginByToken(S_Value)
         response.send(tmp)
-
-
-
-
     } catch (error) {
         console.log(error)
     }
 
+});
+
+// lấy streak tuần theo idaccount
+
+app.get("/account/getstreakbyidaccount/:id", async function(request, response) {
+    var AC_Id = request.params.id;
+    var tmp = await accountDao.getStreakByIdAccount(AC_Id)
+    response.send(tmp)
 });
 
 app.get('/getSession', (req, res) => {
