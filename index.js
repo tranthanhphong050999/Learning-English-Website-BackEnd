@@ -378,11 +378,12 @@ app.get("/word/search/:idwordbook", async function(request, response) {
     })
     // cập nhật 10 câu hỏi vừa làm bài
 
-app.get("/word/update/:wordtrue/:wordfalse", async function(request, response) {
+app.get("/word/update/:wordtrue/:wordfalse/:AC_Id", async function(request, response) {
         var wordTrue = request.params.wordtrue
         var wordFalse = request.params.wordfalse
+        var AC_Id = request.params.AC_Id
         try {
-            var temp = await wordDao.updateTenWordQuestion(wordTrue, wordFalse)
+            var temp = await wordDao.updateTenWordQuestion(wordTrue, wordFalse, AC_Id)
             response.json(temp)
         } catch (error) {
 
