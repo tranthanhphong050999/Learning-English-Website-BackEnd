@@ -5,6 +5,7 @@ const { request } = require("express");
 var crypto = require('crypto-js');
 const md5 = require('md5');
 const e = require("express");
+const util = require("../DAO/Util")
 var wordBookDao = require("../DAO/WordBookDAO")
     // Lấy tất cả account
 
@@ -250,14 +251,30 @@ exports.getStreakByIdAccount = async function(AC_Id) {
                     })
                 } else {
                     console.log("resutls :" + results.length)
+                    var resultsStreak = new Array()
+                    var data = new Array()
                     for (var i = results.length - 1; i >= results.length - 7; i--) {
-                        //let date = resultsHop1[indexResultsHop].W_dateCreated
-
-                        var dateCreated = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+                        resultsStreak[util.getNumDateOffLine(results[i].EOOD_dateCreated)] = results[i];
+                    }
+                    for (var index = 0; index < 7; index++) {
+                        var tmp = util.getDateNow(index)
+                        var dateTmp = new Date(tmp);
+                        var day = dateTmp.getDay();
+                        if (resultsStreak[index] == null) {
+                            data[index] = {
+                                day: day,
+                                data: 0
+                            }
+                        } else {
+                            data[index] = {
+                                day: day,
+                                data: resultsStreak[index]
+                            }
+                        }
                     }
                     resolve({
                         status: true,
-                        data: results
+                        data: data
                     })
                 }
             }

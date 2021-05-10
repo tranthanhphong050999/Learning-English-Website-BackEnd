@@ -366,174 +366,44 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
                                                 data: " Không có dữ liệu."
                                             })
                                         } else {
-                                            //console.log(chalk.red("resultgame" + resultsGame[0].G_Word))
-                                            var hop = new Array()
-                                            var tmp = new Array()
-                                            var results = new Array()
-                                            for (var indexCatalog = 0; indexCatalog < resultsCatalogStored.length; indexCatalog++) {
-                                                hop[indexCatalog] = new Array()
-                                            }
-                                            for (var indexResultsHop = 0; indexResultsHop < resultsHop1.length; indexResultsHop++) {
-                                                let date = resultsHop1[indexResultsHop].W_dateCreated
-                                                console.log("date: " + date)
-                                                var dateCreated = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-                                                if (resultsHop1[indexResultsHop].W_idCatalogStored == 1) {
-                                                    if ((util.getDateNow(resultsCatalogStored[resultsHop1[indexResultsHop].W_idCatalogStored - 1].CS_numDay) == dateCreated || util.getDateNow(0) == dateCreated) && resultsHop1[indexResultsHop].W_idState != 2 && resultsHop1[indexResultsHop].W_idState != 4 && resultsHop1[indexResultsHop].W_idState != 6) {
-
-                                                        var tmpFourAnswerArray = new Array()
-                                                        var tmpPharseAnswerArray = new Array()
-
-
-                                                        var resultsFourAnswer = resultsGame[0].G_Word.split(";")
-                                                        var resultsPharseAnswer = resultsGame[1].G_Word.split(";")
-                                                        var fourAnswer = util.getDataAnswer(tmpFourAnswerArray, resultsFourAnswer)
-                                                        var pharseAnswer = util.getDataAnswer(tmpPharseAnswerArray, resultsPharseAnswer)
-
-                                                        console.log(chalk.red(fourAnswer))
-                                                        console.log(chalk.red(pharseAnswer))
-                                                        var tmpResults = {
-                                                            fourAnswer: fourAnswer,
-                                                            pharseAnswer: pharseAnswer,
-                                                            Word: resultsHop1[indexResultsHop]
-                                                        }
-                                                        hop[resultsHop1[indexResultsHop].W_idCatalogStored - 1].push(tmpResults)
-                                                    }
+                                            var sqlAccount = "select * from account where AC_Id=?"
+                                            database.connection.query(sqlAccount, [AC_Id], function(err, resultsAccount, fields) {
+                                                if (err) {
+                                                    resolve({
+                                                        status: false,
+                                                        data: "Lỗi query"
+                                                    })
                                                 } else {
-                                                    if (util.getDateNow(resultsCatalogStored[resultsHop1[indexResultsHop].W_idCatalogStored - 1].CS_numDay) == dateCreated && resultsHop1[indexResultsHop].W_idState != 4 && resultsHop1[indexResultsHop].W_idState != 6) {
-
-                                                        var tmpFourAnswerArray = new Array()
-                                                        var tmpPharseAnswerArray = new Array()
-
-
-                                                        var resultsFourAnswer = resultsGame[0].G_Word.split(";")
-                                                        var resultsPharseAnswer = resultsGame[1].G_Word.split(";")
-                                                        var fourAnswer = util.getDataAnswer(tmpFourAnswerArray, resultsFourAnswer)
-                                                        var pharseAnswer = util.getDataAnswer(tmpPharseAnswerArray, resultsPharseAnswer)
-
-                                                        console.log(chalk.red(fourAnswer))
-                                                        console.log(chalk.red(pharseAnswer))
-                                                        var tmpResults = {
-                                                            fourAnswer: fourAnswer,
-                                                            pharseAnswer: pharseAnswer,
-                                                            Word: resultsHop1[indexResultsHop]
-                                                        }
-                                                        hop[resultsHop1[indexResultsHop].W_idCatalogStored - 1].push(tmpResults)
+                                                    console.log("dateonline" + resultsAccount[0].AC_dateOnLine)
+                                                    console.log((Date.now() - resultsAccount[0].AC_dateOnLine.getTime()) / (24 * 60 * 60 * 1000))
+                                                    console.log(chalk.red("resultgame" + resultsGame[0].G_Word))
+                                                    var hop = new Array()
+                                                    var tmp = new Array()
+                                                    var results = new Array()
+                                                    for (var indexCatalog = 0; indexCatalog < resultsCatalogStored.length; indexCatalog++) {
+                                                        hop[indexCatalog] = new Array()
                                                     }
+                                                    if (resultsAccount[0].AC_dateOnLine == "0000-00-00") {
+                                                        hop = util.initDataCatalogStored(resultsHop1, resultsCatalogStored, resultsGame, hop)
+                                                    } else {
+                                                        hop = util.initDataCatalogStoredOffLine(resultsHop1, resultsCatalogStored, resultsGame, hop, resultsAccount[0].AC_dateOnLine)
+                                                    }
+                                                    for (var indexCatalog = 0; indexCatalog < resultsCatalogStored.length; indexCatalog++) {
+                                                        if (hop[indexCatalog].length != 0) {
+                                                            console.log(chalk.red("hop " + indexCatalog + " : " + hop[indexCatalog].length))
+                                                            tmp.push(indexCatalog) // số lượng hộp có dữ liệu
+
+                                                        }
+                                                    }
+
+                                                    results = util.getTenWordInCatalog(tmp, hop, results)
+                                                    resolve({
+                                                        status: true,
+                                                        data: results
+                                                    })
                                                 }
-                                            }
-
-                                            for (var indexCatalog = 0; indexCatalog < resultsCatalogStored.length; indexCatalog++) {
-                                                if (hop[indexCatalog].length != 0) {
-                                                    console.log(chalk.red("hop " + indexCatalog + " : " + hop[indexCatalog].length))
-                                                    tmp.push(indexCatalog) // số lượng hộp có dữ liệu
-
-                                                }
-                                            }
-
-                                            switch (tmp.length) {
-                                                case 0:
-                                                    console.log("không tìm thấy")
-                                                    break;
-                                                case 1:
-                                                    console.log("vô 1 rồi nè.")
-                                                    results[0] = util.getRow(hop[tmp[0]], 10)
-                                                    break;
-                                                case 2:
-                                                    var numberRowInResults = 0;
-                                                    for (var i = tmp.length - 1; i >= 0; i--) {
-                                                        if (i == 1) {
-                                                            results[i] = util.getRow(hop[tmp[i]], 4)
-                                                            numberRowInResults += results[i].length
-                                                        }
-                                                        if (i == 0) {
-                                                            if (numberRowInResults < 10 - 4) {
-                                                                results[i] = util.getRow(hop[tmp[i]], 10 - numberRowInResults)
-                                                            } else {
-                                                                results[i] = util.getRow(hop[tmp[i]], 6)
-                                                            }
-                                                        }
-                                                    }
-                                                    break;
-                                                case 3:
-                                                    var numberRowInResults = 0;
-                                                    for (var i = tmp.length - 1; i >= 0; i--) {
-                                                        if (i == 2) {
-                                                            results[i] = util.getRow(hop[tmp[i]], 2)
-                                                            numberRowInResults += results[i].length
-                                                        }
-                                                        if (i == 1) {
-                                                            results[i] = util.getRow(hop[tmp[i]], 3)
-                                                            numberRowInResults += results[i].length
-                                                        }
-                                                        if (i == 0) {
-                                                            if (numberRowInResults < 10 - 5) {
-                                                                results[i] = util.getRow(hop[tmp[i]], 10 - numberRowInResults)
-                                                            } else {
-                                                                results[i] = util.getRow(hop[tmp[i]], 5)
-                                                            }
-                                                        }
-                                                    }
-                                                    break;
-                                                case 4:
-                                                    var numberRowInResults = 0;
-                                                    for (var i = tmp.length - 1; i >= 0; i--) {
-
-                                                        if (i == 3) {
-                                                            results[i] = util.getRow(hop[tmp[i]], 1)
-                                                            numberRowInResults += results[i].length
-                                                        }
-                                                        if (i == 2) {
-                                                            results[i] = util.getRow(hop[tmp[i]], 2)
-                                                            numberRowInResults += results[i].length
-                                                        }
-                                                        if (i == 1) {
-                                                            results[i] = util.getRow(hop[tmp[i]], 3)
-                                                            numberRowInResults += results[i].length
-                                                        }
-                                                        if (i == 0) {
-                                                            if (numberRowInResults < 10 - 4) {
-                                                                results[i] = util.getRow(hop[tmp[i]], 10 - numberRowInResults)
-                                                            } else {
-                                                                results[i] = util.getRow(hop[tmp[i]], 4)
-                                                            }
-                                                        }
-                                                    }
-                                                    break;
-                                                case 5:
-                                                    var numberRowInResults = 0;
-                                                    for (var i = tmp.length - 1; i >= 0; i--) {
-                                                        if (i == 4) {
-                                                            results[i] = util.getRow(hop[i], 1)
-                                                            numberRowInResults += results[i].length
-                                                        }
-                                                        if (i == 3) {
-                                                            results[i] = util.getRow(hop[i], 2)
-                                                            numberRowInResults += results[i].length
-                                                        }
-                                                        if (i == 2) {
-                                                            results[i] = util.getRow(hop[i], 1)
-                                                            numberRowInResults += results[i].length
-                                                        }
-                                                        if (i == 1) {
-                                                            results[i] = util.getRow(hop[i], 3)
-                                                            numberRowInResults += results[i].length
-                                                        }
-                                                        if (i == 0) {
-                                                            if (numberRowInResults < 10 - 3) {
-                                                                results[i] = util.getRow(hop[i], 10 - numberRowInResults)
-                                                            } else {
-                                                                results[i] = util.getRow(hop[i], 3)
-                                                            }
-                                                        }
-                                                    }
-                                                    //results.push(util.getRow(hop[0], 3))
-                                                    console.log(results)
-                                                    break;
-                                            }
-                                            resolve({
-                                                status: true,
-                                                data: results
                                             })
+
                                         }
                                     }
                                 })
@@ -554,31 +424,76 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
 
 // cập nhật từ sau khi được trả lời câu hỏi 
 
-exports.updateTenWordQuestion = async function(wordTrue, wordFalse) {
+exports.updateTenWordQuestion = async function(wordTrue, wordFalse, AC_Id) {
     return new Promise(resolve => {
         var dateNow = util.getDateNow(0);
         var arrWordTrue = wordTrue.split(",")
         var arrWordFalse = wordFalse.split(",")
-        console.log("datenow= : " + dateNow)
-        sqlWordTrue = "UPDATE word AS w SET w.W_dateCreated = ?, w.W_idCatalogStored = CASE  WHEN w.W_idCatalogStored = 5 THEN '5'WHEN w.W_idCatalogStored !=5 THEN w.W_idCatalogStored+1 ELSE'' END WHERE w.W_Id IN (?)"
-        database.connection.query(sqlWordTrue, [dateNow, arrWordTrue], function(err, resultsWordTrue, fields) {
+        sqlEOOD = "SELECT * FROM expofoneday WHERE EOOD_dateCreated = ? and EOOD_idAccount=?"
+        database.connection.query(sqlEOOD, [util.getDateNow(0), AC_Id], function(err, resultsEOOD, fields) {
             if (err) {
-                resolve({ status: false, err: err })
+                resolve({
+                    status: false,
+                    data: "Lỗi Query"
+                })
             } else {
-                console.log(fields)
-                sqlWordFalse = "UPDATE word AS w SET w.W_idCatalogStored = 1,w.W_dateCreated = ? WHERE w.W_Id IN (?)"
-                database.connection.query(sqlWordFalse, [dateNow, arrWordFalse], function(err, resultsWordFalse, fields) {
+                var sqlQueryEOOD = ""
+                var values
+                if (resultsEOOD == "") {
+                    sqlQueryEOOD = "INSERT INTO expofoneday( EOOD_Exp,EOOD_dateCreated,EOOD_idAccount) VALUES ?"
+                    values = [
+                        [arrWordTrue.length, util.getDateNow(0), AC_Id]
+                    ]
+                } else {
+                    sqlQueryEOOD = "UPDATE expofoneday SET EOOD_Exp= EOOD_Exp + " + arrWordTrue.length + " WHERE EOOD_idAccount=" + resultsEOOD[0].EOOD_idAccount
+                    values = ""
+                }
+                database.connection.query(sqlQueryEOOD, [values], function(err, resultsQueryEOOD, fields) {
                     if (err) {
-                        resolve({ status: false, err: err })
+                        resolve({
+                            status: false,
+                            data: "Lỗi Query"
+                        })
                     } else {
-                        console.log(fields)
-                        resolve({ status: true })
-                    }
 
+                        console.log("datenow= : " + dateNow)
+                        sqlWordTrue = "UPDATE word AS w SET w.W_dateCreated = ?, w.W_idCatalogStored = CASE  WHEN w.W_idCatalogStored = 5 THEN '5'WHEN w.W_idCatalogStored !=5 THEN w.W_idCatalogStored+1 ELSE'' END WHERE w.W_Id IN (?)"
+                        database.connection.query(sqlWordTrue, [dateNow, arrWordTrue], function(err, resultsWordTrue, fields) {
+                            if (err) {
+                                resolve({ status: false, err: err })
+                            } else {
+                                //console.log(fields)
+                                sqlWordFalse = "UPDATE word AS w SET w.W_idCatalogStored = 1,w.W_dateCreated = ? WHERE w.W_Id IN (?)"
+                                database.connection.query(sqlWordFalse, [dateNow, arrWordFalse], function(err, resultsWordFalse, fields) {
+                                    if (err) {
+                                        resolve({ status: false, err: err })
+                                    } else {
+                                        sqlAccount = "UPDATE account SET AC_dateOnLine = ? Where AC_Id =?"
+                                        database.connection.query(sqlAccount, [util.getDateNow(0), AC_Id], function(err, resultsAccount, fields) {
+                                            if (err) {
+                                                resolve({
+                                                    status: false,
+                                                    err: err
+                                                })
+                                            } else {
+                                                //console.log(fields)
+
+                                                resolve({ status: true })
+                                            }
+                                        })
+
+                                    }
+
+                                })
+                            }
+
+                        })
+
+                    }
                 })
             }
-
         })
+
     })
 
 }
