@@ -253,9 +253,16 @@ exports.getStreakByIdAccount = async function(AC_Id) {
                     console.log("resutls :" + results.length)
                     var resultsStreak = new Array()
                     var data = new Array()
-                    for (var i = results.length - 1; i >= results.length - 7; i--) {
-                        resultsStreak[util.getNumDateOffLine(results[i].EOOD_dateCreated)] = results[i];
+                    if (results.length >= 7) {
+                        for (var i = results.length - 1; i >= results.length - 7; i--) {
+                            resultsStreak[util.getNumDateOffLine(results[i].EOOD_dateCreated)] = results[i];
+                        }
+                    } else {
+                        for (var i = results.length - 1; i >= 0; i--) {
+                            resultsStreak[util.getNumDateOffLine(results[i].EOOD_dateCreated)] = results[i];
+                        }
                     }
+
                     for (var index = 0; index < 7; index++) {
                         var tmp = util.getDateNow(index)
                         var dateTmp = new Date(tmp);
