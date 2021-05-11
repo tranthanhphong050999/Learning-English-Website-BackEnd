@@ -302,7 +302,7 @@ exports.getAnalyticWordByIdAccount = async function(AC_Id) {
             } else {
                 totalWord = results.length
                 for (var i = 0; i < results.length; i++) {
-                    var dateCreated = results[i].W_dateCreated.getFullYear() + '-' + (results[i].W_dateCreated.getMonth() + 1) + '-' + results[i].W_dateCreated.getDate();
+                    var dateCreated = results[i].W_addedWordDate.getFullYear() + '-' + (results[i].W_addedWordDate.getMonth() + 1) + '-' + results[i].W_addedWordDate.getDate();
                     if (dateCreated == date) {
                         totalWordToday++;
                     }
@@ -374,9 +374,7 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
                                                         data: "Lỗi query"
                                                     })
                                                 } else {
-                                                    console.log("dateonline" + resultsAccount[0].AC_dateOnLine)
-                                                    console.log((Date.now() - resultsAccount[0].AC_dateOnLine.getTime()) / (24 * 60 * 60 * 1000))
-                                                    console.log(chalk.red("resultgame" + resultsGame[0].G_Word))
+
                                                     var hop = new Array()
                                                     var tmp = new Array()
                                                     var results = new Array()
@@ -426,6 +424,7 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
 
 exports.updateTenWordQuestion = async function(wordTrue, wordFalse, AC_Id) {
     return new Promise(resolve => {
+
         var dateNow = util.getDateNow(0);
         var arrWordTrue = wordTrue.split(",")
         var arrWordFalse = wordFalse.split(",")
@@ -456,7 +455,7 @@ exports.updateTenWordQuestion = async function(wordTrue, wordFalse, AC_Id) {
                         })
                     } else {
 
-                        console.log("datenow= : " + dateNow)
+
                         sqlWordTrue = "UPDATE word AS w SET w.W_dateCreated = ?, w.W_idCatalogStored = CASE  WHEN w.W_idCatalogStored = 5 THEN '5'WHEN w.W_idCatalogStored !=5 THEN w.W_idCatalogStored+1 ELSE'' END WHERE w.W_Id IN (?)"
                         database.connection.query(sqlWordTrue, [dateNow, arrWordTrue], function(err, resultsWordTrue, fields) {
                             if (err) {
@@ -498,13 +497,141 @@ exports.updateTenWordQuestion = async function(wordTrue, wordFalse, AC_Id) {
 
 }
 
-// exports.getTenWordByIdCatalogStored = async function(AC_Id) {
-//     var catalogStored = null
-//     var hop1;
-//     var hop2 = null
-//     var hop3 = null
-//     var hop4 = null
-//     var hop5 = null
+// Thống kê sổ từ theo id wordbook
+
+exports.statisticsByIdWordBook = async function(W_idWordBook) {
+    return new Promise(resolve => {
+        var tuMoi = 0
+        var dangHoc = 0
+        var daThuoc = 0
+        sql = "SELECT * from word Where W_idWordBook=?"
+        database.connection.query(sql, [W_idWordBook], function(err, resultsWord, fields) {
+            if (err) {
+                resolve({
+                    status: false,
+                    data: "Lỗi query"
+                })
+            } else {
+                if (resultsWord == "") {
+                    resolve({
+                        status: false,
+                        data: "Không có dữ liệu"
+                    })
+                } else {
+                    for (var indexWord = 0; indexWord < resultsWord.length; indexWord++) {
+                        if (util.parseDate(resultsWord[indexWord].W_addedWordDate) == util.getDateNow(0)) {
+                            tuMoi++;
+                        }
+                        if (resultsWord[indexWord].W_idState == 3 || resultsWord[indexWord].W_idState == 5) {
+                            dangHoc++;
+                        }
+                        if (resultsWord[indexWord].W_idState == 4 || resultsWord[indexWord].W_idState == 6) {
+                            daThuoc++;
+                        }
+                    }
+                    var tmp = {
+                        status: true,
+                        tuMoi: tuMoi,
+                        dangHoc: dangHoc,
+                        daThuoc: daThuoc
+                    }
+                    resolve(tmp)
+                }
+            }
+        })
+    })
+}
+
+// Lấy tất cả bookofstore
+
+exports.getAllBookOfStore = async function() {
+    return new Promise(resolve => {
+        sql = "select * from bookofstore"
+        database.connection.query(sql, function(err, resultsBookOfStore, fields) {
+            if (err) {
+                resolve({
+                    status: false,
+                    data: "Lỗi query"
+                })
+            } else {
+                if (resultsBookOfStore == "") {
+                    resolve({
+                        status: false,
+                        data: "Không có dữ liệu"
+                    })
+                } else {
+                    resolve({
+                        status: true,
+                        data: resultsBookOfStore
+                    })
+                }
+            }
+        })
+    })
+}
+
+// lấy tất cả categoryofbook theo idbookofstore
+
+exports.getAllCategoryOfBook = async function(COB_idBookOfStore) {
+    return new Promise(resolve => {
+        sql = "select * from categoryofbook where COB_idBookOfStore= ?"
+        database.connection.query(sql, [COB_idBookOfStore], function(err, resultsCategoryOfBook, fields) {
+            if (err) {
+                resolve({
+                    status: false,
+                    data: "Lỗi query"
+                })
+            } else {
+                if (resultsCategoryOfBook == "") {
+                    resolve({
+                        status: false,
+                        data: "Không có dữ liệu"
+                    })
+                } else {
+                    resolve({
+                        status: true,
+                        data: resultsCategoryOfBook
+                    })
+                }
+            }
+        })
+    })
+}
+
+// Lấy tất cả wordofstore
+
+exports.getAllWordOfStore = async function(WOS_idCategoryOfBook) {
+        return new Promise(resolve => {
+            sql = "select * from wordofstore where WOS_idCategoryOfBook= ?"
+            database.connection.query(sql, [WOS_idCategoryOfBook], function(err, resultsWordOfStore, fields) {
+                if (err) {
+                    resolve({
+                        status: false,
+                        data: "Lỗi query"
+                    })
+                } else {
+                    if (resultsWordOfStore == "") {
+                        resolve({
+                            status: false,
+                            data: "Không có dữ liệu"
+                        })
+                    } else {
+                        resolve({
+                            status: true,
+                            data: resultsWordOfStore
+                        })
+                    }
+                }
+            })
+        })
+    }
+    // exports.getTenWordByIdCatalogStored = async function(AC_Id) {
+    //     var catalogStored = null
+    //     var hop1;
+    //     var hop2 = null
+    //     var hop3 = null
+    //     var hop4 = null
+    //     var hop5 = null
 
 //     var numberOfCatalog = 0
 //     return new Promise(resolve => {

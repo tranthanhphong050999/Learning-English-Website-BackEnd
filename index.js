@@ -379,17 +379,60 @@ app.get("/word/search/:idwordbook", async function(request, response) {
     // cập nhật 10 câu hỏi vừa làm bài
 
 app.get("/word/update/:wordtrue/:wordfalse/:AC_Id", async function(request, response) {
-        var wordTrue = request.params.wordtrue
-        var wordFalse = request.params.wordfalse
-        var AC_Id = request.params.AC_Id
+    var wordTrue = request.params.wordtrue
+    var wordFalse = request.params.wordfalse
+    var AC_Id = request.params.AC_Id
+    try {
+        var temp = await wordDao.updateTenWordQuestion(wordTrue, wordFalse, AC_Id)
+        response.json(temp)
+    } catch (error) {
+
+    }
+})
+
+//Thống kê wordbook
+app.get("/word/statisticsByIdWordBook/:W_idWordBook", async function(request, response) {
+    var W_idWordBook = request.params.W_idWordBook
+    try {
+        var temp = await wordDao.statisticsByIdWordBook(W_idWordBook)
+        response.send(temp)
+    } catch (error) {
+
+    }
+})
+
+// Lấy tất cả BookOfStore
+
+app.get("/word/getAllBookOfStore", async function(request, response) {
         try {
-            var temp = await wordDao.updateTenWordQuestion(wordTrue, wordFalse, AC_Id)
-            response.json(temp)
+            var temp = await wordDao.getAllBookOfStore()
+            response.send(temp)
         } catch (error) {
 
         }
     })
-    //************--- WORDBOOK---***********/
+    // Lấy tất cả categoryofbook
+app.get("/word/getAllCategoryOfBook/:COB_idBookOfStore", async function(request, response) {
+        var COB_idBookOfStore = request.params.COB_idBookOfStore
+        try {
+            var temp = await wordDao.getAllCategoryOfBook(COB_idBookOfStore)
+            response.send(temp)
+        } catch (error) {
+
+        }
+    })
+    // Lấy tất cả wordofstore
+app.get("/word/getAllWordOfStore/:WOS_idWordOfStore", async function(request, response) {
+    var WOS_idWordOfStore = request.params.WOS_idWordOfStore
+    try {
+        var temp = await wordDao.getAllWordOfStore(WOS_idWordOfStore)
+        response.send(temp)
+    } catch (error) {
+
+    }
+})
+
+//************--- WORDBOOK---***********/
 
 // Lấy tất cả wordbook
 

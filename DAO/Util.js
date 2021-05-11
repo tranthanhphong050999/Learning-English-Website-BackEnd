@@ -24,6 +24,16 @@ exports.getDateNow = function(numberDate) {
     return dateCreatedNow
 }
 
+exports.getDateNowAdd1 = function(numberDate) {
+    let dateNow = (Date.now() - (24 * 60 * 60 * 1000) * numberDate) + (24 * 60 * 60 * 1000)
+    let dateTmp = new Date(dateNow)
+    var month = ((dateTmp.getMonth() + 1) < 10) ? ("0" + (dateTmp.getMonth() + 1)) : (dateTmp.getMonth() + 1)
+    var date = ((dateTmp.getDate()) < 10) ? ("0" + (dateTmp.getDate())) : (dateTmp.getDate())
+    var dateCreatedNow = dateTmp.getFullYear() + '-' + month + '-' + date;
+    console.log("now :" + dateCreatedNow)
+    return dateCreatedNow
+}
+
 function getDateNow(numberDate) {
     let dateNow = Date.now() - (24 * 60 * 60 * 1000) * numberDate
     let dateTmp = new Date(dateNow)
@@ -47,6 +57,15 @@ function checkInArray(number, array) {
 exports.getNumDateOffLine = function(day) {
     let date = Date.now() - day.getTime()
     return Math.floor(date / (24 * 60 * 60 * 1000))
+}
+
+exports.parseDate = function(date) {
+    let dateTmp = new Date(date)
+    var month = ((dateTmp.getMonth() + 1) < 10) ? ("0" + (dateTmp.getMonth() + 1)) : (dateTmp.getMonth() + 1)
+    var date = ((dateTmp.getDate()) < 10) ? ("0" + (dateTmp.getDate())) : (dateTmp.getDate())
+    var dateCreatedNow = dateTmp.getFullYear() + '-' + month + '-' + date;
+    console.log("now :" + dateCreatedNow)
+    return dateCreatedNow
 }
 
 function getNumDateOffLine(day) {
