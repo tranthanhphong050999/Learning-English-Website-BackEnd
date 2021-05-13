@@ -47,16 +47,35 @@ exports.getOneAccountById = async function(AC_Id, S_Value) {
                         }
                         resolve(tmp)
                     } else {
+
                         if (results == "") { resolve({ status: false }) } else {
-                            var tmp = {
-                                status: true,
-                                data: results
-                            }
-                            resolve(tmp)
+                            var sqlExp = "SELECT SUM(EOOD_Exp) as EOOD_sumExp from expofoneday WHERE EOOD_idAccount=?"
+                            database.connection.query(sqlExp, [AC_Id], function(err, resultsExp, fields) {
+                                if (err) {
+                                    resolve({
+                                        status: false,
+                                        data: "Lỗi query"
+                                    })
+                                } else {
+                                    if (resultsExp == "") {
+                                        resolve({
+                                            status: false,
+                                            data: "Không có dữ liệu"
+                                        })
+                                    } else {
+                                        var tmp = {
+                                            status: true,
+                                            sumExp: resultsExp[0].EOOD_sumExp,
+                                            data: results
+                                        }
+                                        resolve(tmp)
+                                    }
+                                }
+                            })
+
+
                         }
-
                     }
-
                 })
             }
         })
@@ -85,6 +104,8 @@ exports.login = async function(userName, passWord) {
                         AC_passWord: results[0].AC_passWord
                     }
                     resolve(tmp)
+
+
                 } else {
                     resolve("false")
                 }
@@ -223,7 +244,7 @@ exports.loginByToken = async function(S_Value) {
                                 AC_fullName: results1[0].AC_fullName,
                                 AC_Avatar: results1[0].AC_Avatar
                             }
-                            resolve(tmp)
+
                         }
                     })
                 }

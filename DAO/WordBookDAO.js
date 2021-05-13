@@ -113,7 +113,29 @@ exports.updateWordBook = async function(WB_Id, WB_Name, WB_idAccount) {
     })
 }
 
-// Xóa wordbook theo id
+
+//Đổi trạng thái wordbook
+
+exports.updateWordBookState = async function(WB_Id) {
+        return new Promise(resolve => {
+            var sql = "UPDATE wordbook SET WB_idState=1 WHERE WB_Id=?";
+            var values = [WB_Id]
+            if (WB_Id) {
+                database.connection.query(sql, values, function(err, results, fields) {
+                    if (err) {
+                        resolve({ status: false })
+                    } else {
+                        resolve({ status: true })
+                    }
+
+                })
+            } else {
+                resolve({ status: false })
+            }
+
+        })
+    }
+    // Xóa wordbook theo id
 
 exports.deleteWordBookById = async function(WB_Id) {
     return new Promise(resolve => {

@@ -206,6 +206,11 @@ exports.getTenWordInCatalog = function(tmp, hop, results) {
     return results
 }
 
+function getTimeDate(date) {
+    var tmp = new Date(date)
+    return tmp.getTime()
+}
+
 exports.initDataCatalogStored = function(resultsHop1, resultsCatalogStored, resultsGame, hop) {
 
     for (var indexResultsHop = 0; indexResultsHop < resultsHop1.length; indexResultsHop++) {
@@ -216,7 +221,7 @@ exports.initDataCatalogStored = function(resultsHop1, resultsCatalogStored, resu
         var dateCreated = dateTmp.getFullYear() + '-' + month + '-' + date;
         console.log("datetmp: " + dateCreated)
         if (resultsHop1[indexResultsHop].W_idCatalogStored == 1) {
-            if ((getDateNow(resultsCatalogStored[resultsHop1[indexResultsHop].W_idCatalogStored - 1].CS_numDay) == dateCreated) && resultsHop1[indexResultsHop].W_idState != 2 && resultsHop1[indexResultsHop].W_idState != 4 && resultsHop1[indexResultsHop].W_idState != 6) {
+            if ((getTimeDate(getDateNow(resultsCatalogStored[resultsHop1[indexResultsHop].W_idCatalogStored - 1].CS_numDay)) >= getTimeDate(dateCreated)) && resultsHop1[indexResultsHop].W_idState != 2 && resultsHop1[indexResultsHop].W_idState != 4 && resultsHop1[indexResultsHop].W_idState != 6) {
 
                 var tmpFourAnswerArray = new Array()
                 var tmpPharseAnswerArray = new Array()
