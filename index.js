@@ -483,6 +483,18 @@ app.post("/wordbook/add", urlencodedParser, async function(request, response) {
 
 });
 
+// update wordbookstate
+app.get("/wordbook/updateWordBookState/:id", async function(request, response) {
+    var WB_Id = request.params.id
+    try {
+        var temp = await wordBookDao.updateWordBookState(WB_Id)
+        response.send(temp)
+    } catch (error) {
+
+    }
+})
+
+
 // Sửa wordBook
 
 app.post("/wordbook/update", urlencodedParser, async function(request, response) {

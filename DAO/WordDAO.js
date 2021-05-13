@@ -289,10 +289,10 @@ exports.deleteWordByIdWordBook = async function(W_idWordBook) {
 
 exports.getAnalyticWordByIdAccount = async function(AC_Id) {
     return new Promise(resolve => {
-        var today = new Date
-        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        var date = util.getDateNow(0)
         var totalWord = 0
         var totalWordToday = 0
+        var soTuCanOn = 0
         var sql = "SELECT * FROM word" +
             " WHERE W_idWordBook IN (SELECT WB_ID FROM wordbook" +
             " WHERE WB_idAccount = ?)";
@@ -300,19 +300,33 @@ exports.getAnalyticWordByIdAccount = async function(AC_Id) {
             if (err) {
                 resolve({ status: false })
             } else {
+                var sqlEOOD = "Select * from expofoneday Where EOOD_dateCreated=? and EOOD_idAccount=?"
+                database.connection.query(sqlEOOD, [date, AC_Id], function(err, resultsEOOD, fiedls) {
+                    if (err) {
+                        resolve({ status: false })
+                    } else {
+                        if (resultsEOOD == "") {
+                            soTuCanOn = 0
+                        } else {
+                            soTuCanOn = resultsEOOD[0].EOOD_Exp
+
+
+                        }
+                    }
+                })
                 totalWord = results.length
                 for (var i = 0; i < results.length; i++) {
-                    var dateCreated = results[i].W_addedWordDate.getFullYear() + '-' + (results[i].W_addedWordDate.getMonth() + 1) + '-' + results[i].W_addedWordDate.getDate();
+                    var dateCreated = util.parseDate(results[i].W_addedWordDate)
                     if (dateCreated == date) {
                         totalWordToday++;
                     }
                 }
-
                 resolve({
                     status: true,
                     data: {
                         totalWord: totalWord,
-                        totalWordToday: totalWordToday
+                        totalWordToday: totalWordToday,
+                        soTuCanOn: 20 - soTuCanOn
                     }
                 })
             }
@@ -381,11 +395,9 @@ exports.getTenWordByIdCatalogStored = async function(AC_Id) {
                                                     for (var indexCatalog = 0; indexCatalog < resultsCatalogStored.length; indexCatalog++) {
                                                         hop[indexCatalog] = new Array()
                                                     }
-                                                    if (resultsAccount[0].AC_dateOnLine == "0000-00-00") {
-                                                        hop = util.initDataCatalogStored(resultsHop1, resultsCatalogStored, resultsGame, hop)
-                                                    } else {
-                                                        hop = util.initDataCatalogStoredOffLine(resultsHop1, resultsCatalogStored, resultsGame, hop, resultsAccount[0].AC_dateOnLine)
-                                                    }
+
+                                                    hop = util.initDataCatalogStored(resultsHop1, resultsCatalogStored, resultsGame, hop)
+
                                                     for (var indexCatalog = 0; indexCatalog < resultsCatalogStored.length; indexCatalog++) {
                                                         if (hop[indexCatalog].length != 0) {
                                                             console.log(chalk.red("hop " + indexCatalog + " : " + hop[indexCatalog].length))
@@ -467,20 +479,7 @@ exports.updateTenWordQuestion = async function(wordTrue, wordFalse, AC_Id) {
                                     if (err) {
                                         resolve({ status: false, err: err })
                                     } else {
-                                        sqlAccount = "UPDATE account SET AC_dateOnLine = ? Where AC_Id =?"
-                                        database.connection.query(sqlAccount, [util.getDateNow(0), AC_Id], function(err, resultsAccount, fields) {
-                                            if (err) {
-                                                resolve({
-                                                    status: false,
-                                                    err: err
-                                                })
-                                            } else {
-                                                //console.log(fields)
-
-                                                resolve({ status: true })
-                                            }
-                                        })
-
+                                        resolve({ status: true })
                                     }
 
                                 })
