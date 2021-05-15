@@ -569,12 +569,68 @@ exports.getAllBookOfStore = async function() {
     })
 }
 
+// lấy một bookofstore
+
+exports.getOneBookOfStore = async function(BOS_Id) {
+    return new Promise(resolve => {
+        sql = "select * from bookofstore Where BOS_Id=?"
+        database.connection.query(sql, [BOS_Id], function(err, resultsBookOfStore, fields) {
+            if (err) {
+                resolve({
+                    status: false,
+                    data: "Lỗi query"
+                })
+            } else {
+                if (resultsBookOfStore == "") {
+                    resolve({
+                        status: false,
+                        data: "Không có dữ liệu"
+                    })
+                } else {
+                    resolve({
+                        status: true,
+                        data: resultsBookOfStore
+                    })
+                }
+            }
+        })
+    })
+}
+
 // lấy tất cả categoryofbook theo idbookofstore
 
 exports.getAllCategoryOfBook = async function(COB_idBookOfStore) {
     return new Promise(resolve => {
         sql = "select * from categoryofbook where COB_idBookOfStore= ?"
         database.connection.query(sql, [COB_idBookOfStore], function(err, resultsCategoryOfBook, fields) {
+            if (err) {
+                resolve({
+                    status: false,
+                    data: "Lỗi query"
+                })
+            } else {
+                if (resultsCategoryOfBook == "") {
+                    resolve({
+                        status: false,
+                        data: "Không có dữ liệu"
+                    })
+                } else {
+                    resolve({
+                        status: true,
+                        data: resultsCategoryOfBook
+                    })
+                }
+            }
+        })
+    })
+}
+
+// Lấy 1 categoryofbook
+
+exports.getOneCategoryOfBook = async function(COB_Id) {
+    return new Promise(resolve => {
+        sql = "select * from categoryofbook where COB_Id= ?"
+        database.connection.query(sql, [COB_Id], function(err, resultsCategoryOfBook, fields) {
             if (err) {
                 resolve({
                     status: false,

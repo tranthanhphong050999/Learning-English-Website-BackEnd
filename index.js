@@ -366,17 +366,18 @@ app.get("/word/search/:idwordbook/:originalword", async function(request, respon
 })
 app.get("/word/search/:idwordbook", async function(request, response) {
 
-        var W_idWordBook = request.params.idwordbook;
+    var W_idWordBook = request.params.idwordbook;
 
 
-        try {
-            var temp = await wordDao.getWordByName("", W_idWordBook, "")
-            response.send(temp)
-        } catch (error) {
+    try {
+        var temp = await wordDao.getWordByName("", W_idWordBook, "")
+        response.send(temp)
+    } catch (error) {
 
-        }
-    })
-    // cập nhật 10 câu hỏi vừa làm bài
+    }
+})
+
+// cập nhật 10 câu hỏi vừa làm bài
 
 app.get("/word/update/:wordtrue/:wordfalse/:AC_Id", async function(request, response) {
     var wordTrue = request.params.wordtrue
@@ -411,11 +412,33 @@ app.get("/word/getAllBookOfStore", async function(request, response) {
 
         }
     })
+    // Lấy 1 bookofstore
+
+app.get("/word/getOneBookOfStore/:id", async function(request, response) {
+        try {
+            BOS_Id = request.params.id
+            var temp = await wordDao.getOneBookOfStore(BOS_Id)
+            response.send(temp)
+        } catch (error) {
+
+        }
+    })
     // Lấy tất cả categoryofbook
 app.get("/word/getAllCategoryOfBook/:COB_idBookOfStore", async function(request, response) {
         var COB_idBookOfStore = request.params.COB_idBookOfStore
         try {
             var temp = await wordDao.getAllCategoryOfBook(COB_idBookOfStore)
+            response.send(temp)
+        } catch (error) {
+
+        }
+    })
+    // Lấy 1 categoryofbook
+
+app.get("/word/getOneCategoryOfBook/:COB_Id", async function(request, response) {
+        var COB_Id = request.params.COB_Id
+        try {
+            var temp = await wordDao.getOneCategoryOfBook(COB_Id)
             response.send(temp)
         } catch (error) {
 
