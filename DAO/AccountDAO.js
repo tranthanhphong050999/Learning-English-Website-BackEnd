@@ -47,21 +47,26 @@ exports.getOneAccountById = async function(AC_Id, S_Value) {
                         }
                         resolve(tmp)
                     } else {
-
                         if (results == "") { resolve({ status: false }) } else {
                             var sqlExp = "SELECT SUM(EOOD_Exp) as EOOD_sumExp from expofoneday WHERE EOOD_idAccount=?"
                             database.connection.query(sqlExp, [AC_Id], function(err, resultsExp, fields) {
                                 if (err) {
-                                    resolve({
-                                        status: false,
-                                        data: "Lỗi query"
-                                    })
+
+                                    var tmp = {
+                                        status: true,
+                                        sumExp: 0,
+                                        data: results
+                                    }
+                                    resolve(tmp)
+
                                 } else {
                                     if (resultsExp == "") {
-                                        resolve({
-                                            status: false,
-                                            data: "Không có dữ liệu"
-                                        })
+                                        var tmp = {
+                                            status: true,
+                                            sumExp: 0,
+                                            data: results
+                                        }
+                                        resolve(tmp)
                                     } else {
                                         var tmp = {
                                             status: true,
