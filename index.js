@@ -455,6 +455,17 @@ app.get("/word/getAllWordOfStore/:WOS_idWordOfStore", async function(request, re
     }
 })
 
+// Lấy 1 wordofstore
+app.get("/word/getOneWordOfStore/:WOS_Id", async function(request, response) {
+    var WOS_Id = request.params.WOS_Id
+    try {
+        var temp = await wordDao.getOneWordOfStore(WOS_Id)
+        response.send(temp)
+    } catch (error) {
+
+    }
+})
+
 //************--- WORDBOOK---***********/
 
 // Lấy tất cả wordbook

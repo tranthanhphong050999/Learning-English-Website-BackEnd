@@ -656,9 +656,37 @@ exports.getOneCategoryOfBook = async function(COB_Id) {
 // Lấy tất cả wordofstore
 
 exports.getAllWordOfStore = async function(WOS_idCategoryOfBook) {
+    return new Promise(resolve => {
+        sql = "select * from wordofstore where WOS_idCategoryOfBook= ?"
+        database.connection.query(sql, [WOS_idCategoryOfBook], function(err, resultsWordOfStore, fields) {
+            if (err) {
+                resolve({
+                    status: false,
+                    data: "Lỗi query"
+                })
+            } else {
+                if (resultsWordOfStore == "") {
+                    resolve({
+                        status: false,
+                        data: "Không có dữ liệu"
+                    })
+                } else {
+                    resolve({
+                        status: true,
+                        data: resultsWordOfStore
+                    })
+                }
+            }
+        })
+    })
+}
+
+// Lấy tất cả wordofstore
+
+exports.getOneWordOfStore = async function(WOS_Id) {
         return new Promise(resolve => {
-            sql = "select * from wordofstore where WOS_idCategoryOfBook= ?"
-            database.connection.query(sql, [WOS_idCategoryOfBook], function(err, resultsWordOfStore, fields) {
+            sql = "select * from wordofstore where WOS_Id= ?"
+            database.connection.query(sql, [WOS_Id], function(err, resultsWordOfStore, fields) {
                 if (err) {
                     resolve({
                         status: false,

@@ -137,11 +137,13 @@ exports.addAccount = async function(AC_fullName, AC_Email, AC_Streak, AC_Exp, AC
                 ]
                 database.connection.query(sql, [values], function(err, results, fields) {
                     if (err) {
+                        console.log(err)
                         resolve({ status: false })
                     } else {
                         var sql1 = "SELECT * FROM account WHERE AC_Email =?"
                         database.connection.query(sql1, [AC_Email], async function(err, results1, fields) {
                             if (results1 == "") {
+                                console.log("Lỗi 2")
                                 resolve({ status: false })
                             } else {
                                 var tmp = await wordBookDao.addWordBook("Hàng ngày", results1[0].AC_Id)
@@ -157,6 +159,7 @@ exports.addAccount = async function(AC_fullName, AC_Email, AC_Streak, AC_Exp, AC
 
                 })
             } else {
+                console.log("Lỗi 3")
                 resolve({ status: false })
             }
         })
