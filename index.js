@@ -576,7 +576,7 @@ app.get("/wordbook/search/:idaccount/:name", async function(request, response) {
     try {
         var temp = await wordBookDao.getWordBookByName(WB_Name, WB_idAccount)
         response.json(temp)
-    } catch (error) {
+    } catch (erroradasasdaddas) {
 
     }
 })
